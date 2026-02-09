@@ -8,6 +8,7 @@ import { registerSendMessageTool } from "./tools/send-message.js";
 import { registerListPeersTool } from "./tools/list-peers.js";
 import { registerGetHistoryTool } from "./tools/get-history.js";
 import { registerDeregisterPeerTool } from "./tools/deregister-peer.js";
+import { registerHealthCheckTool } from "./tools/health-check.js";
 
 // ---------------------------------------------------------------------------
 // Global error handlers -- registered FIRST before anything else
@@ -50,12 +51,13 @@ async function main(): Promise<void> {
 
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
 
-  // Register all 5 tools
+  // Register all 6 tools
   registerRegisterPeerTool(server);
   registerDeregisterPeerTool(server);
   registerSendMessageTool(server);
   registerListPeersTool(server);
   registerGetHistoryTool(server);
+  registerHealthCheckTool(server);
 
   // Connect stdio transport
   const transport = new StdioServerTransport();
@@ -67,7 +69,7 @@ async function main(): Promise<void> {
   );
 
   logger.info(
-    "Server ready. Tools: cc_register_peer, cc_deregister_peer, cc_send_message, cc_list_peers, cc_get_history",
+    "Server ready. Tools: cc_register_peer, cc_deregister_peer, cc_send_message, cc_list_peers, cc_get_history, cc_health_check",
   );
 }
 
