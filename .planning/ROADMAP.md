@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Configuration and Error Hardening** - Centralized config module and bulletproof error handling across all async paths
 - [x] **Phase 2: Test Suite** - Unit and integration tests covering all tools, services, and workflows
-- [ ] **Phase 3: Health Check and Stale Peer Detection** - New cc_health_check tool and stale peer flagging in list_peers
+- [x] **Phase 3: Health Check and Stale Peer Detection** - New cc_health_check tool and stale peer flagging in list_peers
 - [ ] **Phase 4: Package Hygiene** - npm packaging fields, LICENSE, .gitignore, version, and tool annotations for publication
 - [ ] **Phase 5: Documentation and Registry** - README restructure, env var docs, server.json, npm publish, and MCP Registry submission
 
@@ -65,8 +65,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Health check service, tool handler, and tests (HLTH-01/02/03)
-- [ ] 03-02-PLAN.md -- Stale peer detection: lastSeenAt tracking, list-peers stale flag, and tests (PEER-01/02)
+- [x] 03-01-PLAN.md -- Health check service, tool handler, and tests (HLTH-01/02/03)
+- [x] 03-02-PLAN.md -- Stale peer detection: lastSeenAt tracking, list-peers stale flag, and tests (PEER-01/02)
 
 ### Phase 4: Package Hygiene
 **Goal**: The package is ready for `npm publish` and `npx cc-bridge-mcp-server` works in a clean environment
@@ -108,6 +108,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Configuration and Error Hardening | 4/4 | ✓ Complete | 2026-02-09 |
 | 2. Test Suite | 2/2 | ✓ Complete | 2026-02-09 |
-| 3. Health Check and Stale Peer Detection | 0/2 | In progress | - |
+| 3. Health Check and Stale Peer Detection | 2/2 | ✓ Complete | 2026-02-09 |
 | 4. Package Hygiene | 0/TBD | Not started | - |
 | 5. Documentation and Registry | 0/TBD | Not started | - |
