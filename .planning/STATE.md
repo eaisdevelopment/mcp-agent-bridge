@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Two Claude Code sessions can exchange messages in real-time while staying fully isolated in their own repos
-**Current focus:** Phase 1 - Configuration and Error Hardening
+**Current focus:** Phase 2 - Test Suite
 
 ## Current Position
 
-Phase: 1 of 5 (Configuration and Error Hardening)
-Plan: 4 of 4 in current phase -- PHASE COMPLETE
-Status: Phase 1 Complete
-Last activity: 2026-02-09 -- Completed 01-04 (tool handler error wrapping)
+Phase: 2 of 5 (Test Suite)
+Plan: 1 of 2 in current phase
+Status: Executing
+Last activity: 2026-02-09 -- Completed 02-01 (service-layer test infrastructure)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 3min
-- Total execution time: 0.17 hours
+- Total execution time: 0.22 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-config-error-hardening | 4 | 10min | 3min |
+| 02-test-suite | 1 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min), 01-04 (2min)
+- Last 5 plans: 01-02 (2min), 01-03 (4min), 01-04 (2min), 02-01 (3min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -61,6 +62,9 @@ Recent decisions affecting current work:
 - [01-03]: CLI errors enriched in stderr field of CliExecResult (not thrown exceptions)
 - [01-04]: Nested try/catch around recordMessage in send-message catch path to prevent unhandled rejection
 - [01-04]: Peer-not-found uses BridgeError with PEER_NOT_FOUND code and suggestion to register first
+- [02-01]: Vitest resolve.extensions [.ts, .js, .json] for Node16 ESM .js-to-.ts resolution
+- [02-01]: createTestConfig uses CC_BRIDGE_LOG_LEVEL error to suppress noisy test output
+- [02-01]: Test files excluded from tsconfig compilation to prevent dist pollution
 
 ### Pending Todos
 
@@ -73,5 +77,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 01-04-PLAN.md (tool handler error wrapping) -- Phase 1 complete
+Stopped at: Completed 02-01-PLAN.md (service-layer test infrastructure)
 Resume file: None
