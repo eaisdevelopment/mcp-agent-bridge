@@ -1,0 +1,21 @@
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# IDE
+.idea/
+
+# Lock files (regenerated on install)
+package-lock.json
+
+# Coverage
+coverage/
+
+# OS files
+.DS_Store
+
+# Environment
+.env
+.env.local
