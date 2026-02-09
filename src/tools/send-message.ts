@@ -2,6 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { getPeer, recordMessage } from "../services/peer-registry.js";
 import { execClaude } from "../services/cc-cli.js";
+import { BridgeError, BridgeErrorCode, successResult, errorResult } from "../errors.js";
+import { logger } from "../logger.js";
 
 export function registerSendMessageTool(server: McpServer): void {
   server.registerTool(
@@ -31,102 +33,76 @@ export function registerSendMessageTool(server: McpServer): void {
       },
     },
     async ({ fromPeerId, toPeerId, message }) => {
-      const from = await getPeer(fromPeerId);
-      if (!from) {
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify(
-                { success: false, error: `Sender peer '${fromPeerId}' not registered` },
-                null,
-                2
-              ),
-            },
-          ],
-          isError: true,
-        };
-      }
-
-      const to = await getPeer(toPeerId);
-      if (!to) {
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify(
-                { success: false, error: `Target peer '${toPeerId}' not registered` },
-                null,
-                2
-              ),
-            },
-          ],
-          isError: true,
-        };
-      }
-
-      const prefixed = `[From ${from.label} (${fromPeerId})]: ${message}`;
-      const startMs = Date.now();
-
       try {
-        const result = await execClaude(to.sessionId, prefixed, to.cwd);
-        const durationMs = Date.now() - startMs;
-        const success = result.exitCode === 0;
+        const from = await getPeer(fromPeerId);
+        if (!from) {
+          return errorResult(
+            new BridgeError(
+              BridgeErrorCode.PEER_NOT_FOUND,
+              `Sender peer '${fromPeerId}' not registered`,
+              "Register the peer first with cc_register_peer",
+            ),
+          );
+        }
 
-        await recordMessage({
-          fromPeerId,
-          toPeerId,
-          message,
-          response: success ? result.stdout : null,
-          durationMs,
-          success,
-          error: success ? null : result.stderr,
-        });
+        const to = await getPeer(toPeerId);
+        if (!to) {
+          return errorResult(
+            new BridgeError(
+              BridgeErrorCode.PEER_NOT_FOUND,
+              `Target peer '${toPeerId}' not registered`,
+              "Register the peer first with cc_register_peer",
+            ),
+          );
+        }
 
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify(
-                {
-                  success,
-                  response: success ? result.stdout : null,
-                  error: success ? null : result.stderr,
-                  durationMs,
-                },
-                null,
-                2
-              ),
-            },
-          ],
-        };
+        const prefixed = `[From ${from.label} (${fromPeerId})]: ${message}`;
+        const startMs = Date.now();
+
+        try {
+          const result = await execClaude(to.sessionId, prefixed, to.cwd);
+          const durationMs = Date.now() - startMs;
+          const success = result.exitCode === 0;
+
+          await recordMessage({
+            fromPeerId,
+            toPeerId,
+            message,
+            response: success ? result.stdout : null,
+            durationMs,
+            success,
+            error: success ? null : result.stderr,
+          });
+
+          return successResult({
+            success,
+            response: success ? result.stdout : null,
+            error: success ? null : result.stderr,
+            durationMs,
+          });
+        } catch (err) {
+          const durationMs = Date.now() - startMs;
+          const errorMsg = err instanceof Error ? err.message : String(err);
+
+          try {
+            await recordMessage({
+              fromPeerId,
+              toPeerId,
+              message,
+              response: null,
+              durationMs,
+              success: false,
+              error: errorMsg,
+            });
+          } catch (recordErr) {
+            logger.error("Failed to record failed message", { error: recordErr });
+          }
+
+          return errorResult(err);
+        }
       } catch (err) {
-        const durationMs = Date.now() - startMs;
-        const errorMsg = err instanceof Error ? err.message : String(err);
-
-        await recordMessage({
-          fromPeerId,
-          toPeerId,
-          message,
-          response: null,
-          durationMs,
-          success: false,
-          error: errorMsg,
-        });
-
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: JSON.stringify(
-                { success: false, error: errorMsg, durationMs },
-                null,
-                2
-              ),
-            },
-          ],
-          isError: true,
-        };
+        logger.error("send-message failed", { error: err });
+        return errorResult(err);
       }
     }
   );
