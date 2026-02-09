@@ -1,9 +1,17 @@
 {
   "name": "cc-bridge-mcp-server",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "MCP server for inter-Claude-Code session communication bridge",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "cc-bridge-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
@@ -11,8 +19,29 @@
     "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build"
   },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "claude-code",
+    "bridge",
+    "inter-session",
+    "communication",
+    "ai",
+    "agent"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OWNER/cc-bridge-mcp-server.git"
+  },
+  "homepage": "https://github.com/OWNER/cc-bridge-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/OWNER/cc-bridge-mcp-server/issues"
+  },
+  "license": "ISC",
   "engines": {
     "node": ">=18"
   },
