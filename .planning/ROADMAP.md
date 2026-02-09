@@ -48,11 +48,11 @@ Plans:
   3. Full register-send-history-deregister workflow passes via InMemoryTransport without touching shared /tmp
   4. CLI service tests cover success, timeout, and error subprocess paths using mocked `execFile`
   5. All tests use isolated temp directories; no test pollutes /tmp or conflicts with other tests running in parallel
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Test infrastructure, test helpers, and service-layer tests (peer-registry, cc-cli, config, errors)
+- [ ] 02-02-PLAN.md -- Tool handler tests for all 5 tools and full integration test
 
 ### Phase 3: Health Check and Stale Peer Detection
 **Goal**: Users can diagnose bridge problems with a single tool call, and stale peers are visibly flagged
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Configuration and Error Hardening | 4/4 | ✓ Complete | 2026-02-09 |
-| 2. Test Suite | 0/TBD | Not started | - |
+| 2. Test Suite | 0/2 | Not started | - |
 | 3. Health Check and Stale Peer Detection | 0/TBD | Not started | - |
 | 4. Package Hygiene | 0/TBD | Not started | - |
 | 5. Documentation and Registry | 0/TBD | Not started | - |
