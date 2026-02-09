@@ -13,7 +13,7 @@ This roadmap takes a working prototype MCP bridge server and transforms it into 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Configuration and Error Hardening** - Centralized config module and bulletproof error handling across all async paths
-- [ ] **Phase 2: Test Suite** - Unit and integration tests covering all tools, services, and workflows
+- [x] **Phase 2: Test Suite** - Unit and integration tests covering all tools, services, and workflows
 - [ ] **Phase 3: Health Check and Stale Peer Detection** - New cc_health_check tool and stale peer flagging in list_peers
 - [ ] **Phase 4: Package Hygiene** - npm packaging fields, LICENSE, .gitignore, version, and tool annotations for publication
 - [ ] **Phase 5: Documentation and Registry** - README restructure, env var docs, server.json, npm publish, and MCP Registry submission
@@ -51,8 +51,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Test infrastructure, test helpers, and service-layer tests (peer-registry, cc-cli, config, errors)
-- [ ] 02-02-PLAN.md -- Tool handler tests for all 5 tools and full integration test
+- [x] 02-01-PLAN.md -- Test infrastructure, test helpers, and service-layer tests (peer-registry, cc-cli, config, errors)
+- [x] 02-02-PLAN.md -- Tool handler tests for all 5 tools and full integration test
 
 ### Phase 3: Health Check and Stale Peer Detection
 **Goal**: Users can diagnose bridge problems with a single tool call, and stale peers are visibly flagged
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Configuration and Error Hardening | 4/4 | ✓ Complete | 2026-02-09 |
-| 2. Test Suite | 0/2 | Not started | - |
+| 2. Test Suite | 2/2 | ✓ Complete | 2026-02-09 |
 | 3. Health Check and Stale Peer Detection | 0/TBD | Not started | - |
 | 4. Package Hygiene | 0/TBD | Not started | - |
 | 5. Documentation and Registry | 0/TBD | Not started | - |
