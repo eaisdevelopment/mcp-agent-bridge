@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 1 of 5 (Configuration and Error Hardening)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: Executing
-Last activity: 2026-02-09 -- Completed 01-02 (logger, startup, entry point)
+Last activity: 2026-02-09 -- Completed 01-03 (service hardening: peer-registry and cc-cli)
 
-Progress: [███░░░░░░░] 10%
+Progress: [████░░░░░░] 15%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 2min
-- Total execution time: 0.07 hours
+- Total plans completed: 3
+- Average duration: 3min
+- Total execution time: 0.13 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-config-error-hardening | 2 | 4min | 2min |
+| 01-config-error-hardening | 3 | 8min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (2min)
+- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -55,6 +55,10 @@ Recent decisions affecting current work:
 - [01-02]: First-run config persisted to ~/.cc-bridge-config.json
 - [01-02]: Claude CLI missing is warn-only; does not block startup
 - [01-02]: Global error handlers do not exit process (MCP server tries to continue)
+- [01-03]: State/lock paths derived at call time (not module load) for test isolation via resetConfig()
+- [01-03]: Corrupt state auto-recovery: backup + warning log + fresh empty state
+- [01-03]: CLI char limit 0 means no truncation (conditional logic)
+- [01-03]: CLI errors enriched in stderr field of CliExecResult (not thrown exceptions)
 
 ### Pending Todos
 
@@ -67,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 01-02-PLAN.md (logger, startup, entry point)
+Stopped at: Completed 01-03-PLAN.md (service hardening: peer-registry and cc-cli)
 Resume file: None
