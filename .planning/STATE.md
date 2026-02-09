@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 1 of 5 (Configuration and Error Hardening)
-Plan: 3 of 4 in current phase
-Status: Executing
-Last activity: 2026-02-09 -- Completed 01-03 (service hardening: peer-registry and cc-cli)
+Plan: 4 of 4 in current phase -- PHASE COMPLETE
+Status: Phase 1 Complete
+Last activity: 2026-02-09 -- Completed 01-04 (tool handler error wrapping)
 
-Progress: [████░░░░░░] 15%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 3min
-- Total execution time: 0.13 hours
+- Total execution time: 0.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-config-error-hardening | 3 | 8min | 3min |
+| 01-config-error-hardening | 4 | 10min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min)
+- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min), 01-04 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -59,6 +59,8 @@ Recent decisions affecting current work:
 - [01-03]: Corrupt state auto-recovery: backup + warning log + fresh empty state
 - [01-03]: CLI char limit 0 means no truncation (conditional logic)
 - [01-03]: CLI errors enriched in stderr field of CliExecResult (not thrown exceptions)
+- [01-04]: Nested try/catch around recordMessage in send-message catch path to prevent unhandled rejection
+- [01-04]: Peer-not-found uses BridgeError with PEER_NOT_FOUND code and suggestion to register first
 
 ### Pending Todos
 
@@ -71,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 01-03-PLAN.md (service hardening: peer-registry and cc-cli)
+Stopped at: Completed 01-04-PLAN.md (tool handler error wrapping) -- Phase 1 complete
 Resume file: None
