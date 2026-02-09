@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Configuration and Error Hardening** - Centralized config module and bulletproof error handling across all async paths
 - [x] **Phase 2: Test Suite** - Unit and integration tests covering all tools, services, and workflows
 - [x] **Phase 3: Health Check and Stale Peer Detection** - New cc_health_check tool and stale peer flagging in list_peers
-- [ ] **Phase 4: Package Hygiene** - npm packaging fields, LICENSE, .gitignore, version, and tool annotations for publication
+- [x] **Phase 4: Package Hygiene** - npm packaging fields, LICENSE, .gitignore, version, and tool annotations for publication
 - [ ] **Phase 5: Documentation and Registry** - README restructure, env var docs, server.json, npm publish, and MCP Registry submission
 
 ## Phase Details
@@ -81,8 +81,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- npm packaging fields, shebang, and version single-sourcing
-- [ ] 04-02-PLAN.md -- LICENSE, .gitignore, and full package verification
+- [x] 04-01-PLAN.md -- npm packaging fields, shebang, and version single-sourcing
+- [x] 04-02-PLAN.md -- LICENSE, .gitignore, and full package verification
 
 ### Phase 5: Documentation and Registry
 **Goal**: A new user can install, configure, troubleshoot, and use the bridge by reading the README alone, and the package is listed on the MCP Registry
@@ -110,5 +110,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Configuration and Error Hardening | 4/4 | ✓ Complete | 2026-02-09 |
 | 2. Test Suite | 2/2 | ✓ Complete | 2026-02-09 |
 | 3. Health Check and Stale Peer Detection | 2/2 | ✓ Complete | 2026-02-09 |
-| 4. Package Hygiene | 0/2 | Not started | - |
+| 4. Package Hygiene | 2/2 | ✓ Complete | 2026-02-09 |
 | 5. Documentation and Registry | 0/TBD | Not started | - |
