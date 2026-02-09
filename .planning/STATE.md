@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Two Claude Code sessions can exchange messages in real-time while staying fully isolated in their own repos
-**Current focus:** Phase 2 - Test Suite
+**Current focus:** Phase 3 - Health & Stale Peers
 
 ## Current Position
 
-Phase: 2 of 5 (Test Suite)
-Plan: 1 of 2 in current phase
-Status: Executing
-Last activity: 2026-02-09 -- Completed 02-01 (service-layer test infrastructure)
+Phase: 3 of 5 (Health & Stale Peers)
+Plan: 0 of ? in current phase
+Status: Ready for planning
+Last activity: 2026-02-09 -- Completed 02-02 (tool handler tests)
 
-Progress: [███░░░░░░░] 30%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 3min
-- Total execution time: 0.22 hours
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-config-error-hardening | 4 | 10min | 3min |
-| 02-test-suite | 1 | 3min | 3min |
+| 02-test-suite | 2 | 5min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (2min), 01-03 (4min), 01-04 (2min), 02-01 (3min)
+- Last 5 plans: 01-03 (4min), 01-04 (2min), 02-01 (3min), 02-02 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - [02-01]: Vitest resolve.extensions [.ts, .js, .json] for Node16 ESM .js-to-.ts resolution
 - [02-01]: createTestConfig uses CC_BRIDGE_LOG_LEVEL error to suppress noisy test output
 - [02-01]: Test files excluded from tsconfig compilation to prevent dist pollution
+- [02-02]: Tool tests use InMemoryTransport.createLinkedPair() + Client.callTool() to exercise full MCP protocol path
+- [02-02]: Tests that need setup data register multiple tools on same McpServer for MCP-protocol test data creation
+- [02-02]: send-message and get-history tests mock node:child_process identically to cc-cli.test.ts pattern
 
 ### Pending Todos
 
@@ -77,5 +80,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 02-01-PLAN.md (service-layer test infrastructure)
+Stopped at: Completed 02-02-PLAN.md (tool handler tests) -- Phase 02-test-suite complete
 Resume file: None
