@@ -78,10 +78,11 @@ Plans:
   3. All 5 tools (plus the new health_check) have correct MCP tool annotations (readOnlyHint, destructiveHint, etc.)
   4. `package.json` contains `bin`, `files`, `prepublishOnly`, `keywords`, `repository`, `homepage`, `bugs` fields and version is `0.1.0`
   5. LICENSE file exists with ISC text, and `.gitignore` excludes `dist/`, `node_modules/`, `.idea/`, and lock files
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md -- npm packaging fields, shebang, and version single-sourcing
+- [ ] 04-02-PLAN.md -- LICENSE, .gitignore, and full package verification
 
 ### Phase 5: Documentation and Registry
 **Goal**: A new user can install, configure, troubleshoot, and use the bridge by reading the README alone, and the package is listed on the MCP Registry
@@ -109,5 +110,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Configuration and Error Hardening | 4/4 | ✓ Complete | 2026-02-09 |
 | 2. Test Suite | 2/2 | ✓ Complete | 2026-02-09 |
 | 3. Health Check and Stale Peer Detection | 2/2 | ✓ Complete | 2026-02-09 |
-| 4. Package Hygiene | 0/TBD | Not started | - |
+| 4. Package Hygiene | 0/2 | Not started | - |
 | 5. Documentation and Registry | 0/TBD | Not started | - |
