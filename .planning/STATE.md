@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Two Claude Code sessions can exchange messages in real-time while staying fully isolated in their own repos
-**Current focus:** Phase 3 complete, ready for Phase 4
+**Current focus:** Phase 4 in progress -- npm packaging hygiene
 
 ## Current Position
 
-Phase: 3 of 5 (Health & Stale Peers) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase Complete
-Last activity: 2026-02-09 -- Completed 03-02 (stale peer detection)
+Phase: 4 of 5 (Package Hygiene)
+Plan: 1 of 2 in current phase
+Status: Executing
+Last activity: 2026-02-09 -- Completed 04-01 (npm packaging fields)
 
-Progress: [████████░░] 75%
+Progress: [█████████░] 85%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 3min
-- Total execution time: 0.42 hours
+- Total execution time: 0.44 hours
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [████████░░] 75%
 | 01-config-error-hardening | 4 | 10min | 3min |
 | 02-test-suite | 2 | 5min | 3min |
 | 03-health-stale-peers | 2 | 10min | 5min |
+| 04-package-hygiene | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3min), 02-02 (2min), 03-01 (5min), 03-02 (5min)
+- Last 5 plans: 02-02 (2min), 03-01 (5min), 03-02 (5min), 04-01 (1min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - [03-02]: updateLastSeen wrapped in try/catch to never break send-message flow
 - [03-02]: migrateState() in readState() for backward-compatible schema evolution (no migration step)
 - [03-02]: potentiallyStale computed in tool handler (not service layer) as enriched response field
+- [04-01]: createRequire over import assertion for package.json (TS 5.7+ regression workaround)
+- [04-01]: OWNER placeholder in repository URLs (no git remote configured)
+- [04-01]: Version 0.1.0 signals pre-1.0 development stage
 
 ### Pending Todos
 
@@ -90,5 +94,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 03-02-PLAN.md (stale peer detection) -- Phase 03 complete
+Stopped at: Completed 04-01-PLAN.md (npm packaging fields)
 Resume file: None
