@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Two Claude Code sessions can exchange messages in real-time while staying fully isolated in their own repos
-**Current focus:** Phase 3 - Health & Stale Peers
+**Current focus:** Phase 3 complete, ready for Phase 4
 
 ## Current Position
 
-Phase: 3 of 5 (Health & Stale Peers)
-Plan: 1 of 2 in current phase
-Status: Executing
-Last activity: 2026-02-09 -- Completed 03-01 (health check tool)
+Phase: 3 of 5 (Health & Stale Peers) -- COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase Complete
+Last activity: 2026-02-09 -- Completed 03-02 (stale peer detection)
 
-Progress: [██████░░░░] 55%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 3min
-- Total execution time: 0.33 hours
+- Total execution time: 0.42 hours
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [██████░░░░] 55%
 |-------|-------|-------|----------|
 | 01-config-error-hardening | 4 | 10min | 3min |
 | 02-test-suite | 2 | 5min | 3min |
-| 03-health-stale-peers | 1 | 5min | 5min |
+| 03-health-stale-peers | 2 | 10min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-04 (2min), 02-01 (3min), 02-02 (2min), 03-01 (5min)
+- Last 5 plans: 02-01 (3min), 02-02 (2min), 03-01 (5min), 03-02 (5min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -73,6 +73,11 @@ Recent decisions affecting current work:
 - [03-01]: Health check lock uses separate .health-lock path to avoid production lock interference
 - [03-01]: Health check types defined locally (not in types.ts) since only used by health-check module
 - [03-01]: Diagnostic sub-check pattern: each returns {ok, message}, orchestrator aggregates with Promise.all
+- [03-02]: CC_BRIDGE_STALE_TIMEOUT_MS default 30min; timeout=0 disables stale detection
+- [03-02]: Sender lastSeenAt always updated on send; target only on success
+- [03-02]: updateLastSeen wrapped in try/catch to never break send-message flow
+- [03-02]: migrateState() in readState() for backward-compatible schema evolution (no migration step)
+- [03-02]: potentiallyStale computed in tool handler (not service layer) as enriched response field
 
 ### Pending Todos
 
@@ -85,5 +90,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 03-01-PLAN.md (health check tool)
+Stopped at: Completed 03-02-PLAN.md (stale peer detection) -- Phase 03 complete
 Resume file: None
