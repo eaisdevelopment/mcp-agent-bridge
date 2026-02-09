@@ -12,7 +12,7 @@ This roadmap takes a working prototype MCP bridge server and transforms it into 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Configuration and Error Hardening** - Centralized config module and bulletproof error handling across all async paths
+- [x] **Phase 1: Configuration and Error Hardening** - Centralized config module and bulletproof error handling across all async paths
 - [ ] **Phase 2: Test Suite** - Unit and integration tests covering all tools, services, and workflows
 - [ ] **Phase 3: Health Check and Stale Peer Detection** - New cc_health_check tool and stale peer flagging in list_peers
 - [ ] **Phase 4: Package Hygiene** - npm packaging fields, LICENSE, .gitignore, version, and tool annotations for publication
@@ -33,10 +33,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Config foundation: Zod config module, BridgeError system, constants refactor
-- [ ] 01-02-PLAN.md -- Logger, startup validation, and index.ts rewrite
-- [ ] 01-03-PLAN.md -- Service hardening: peer-registry and cc-cli config integration
-- [ ] 01-04-PLAN.md -- Tool handler error wrapping across all 5 tools
+- [x] 01-01-PLAN.md -- Config foundation: Zod config module, BridgeError system, constants refactor
+- [x] 01-02-PLAN.md -- Logger, startup validation, and index.ts rewrite
+- [x] 01-03-PLAN.md -- Service hardening: peer-registry and cc-cli config integration
+- [x] 01-04-PLAN.md -- Tool handler error wrapping across all 5 tools
 
 ### Phase 2: Test Suite
 **Goal**: Every tool handler, service module, and end-to-end workflow has automated tests that run in isolation
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Configuration and Error Hardening | 0/4 | Planning complete | - |
+| 1. Configuration and Error Hardening | 4/4 | ✓ Complete | 2026-02-09 |
 | 2. Test Suite | 0/TBD | Not started | - |
 | 3. Health Check and Stale Peer Detection | 0/TBD | Not started | - |
 | 4. Package Hygiene | 0/TBD | Not started | - |
