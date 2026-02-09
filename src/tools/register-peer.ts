@@ -1,6 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { registerPeer, getPeer } from "../services/peer-registry.js";
+import { successResult, errorResult } from "../errors.js";
+import { logger } from "../logger.js";
 
 export function registerRegisterPeerTool(server: McpServer): void {
   server.registerTool(
@@ -33,24 +35,18 @@ export function registerRegisterPeerTool(server: McpServer): void {
       },
     },
     async ({ peerId, sessionId, cwd, label }) => {
-      const existing = await getPeer(peerId);
-      const peer = await registerPeer(peerId, sessionId, cwd, label);
-      return {
-        content: [
-          {
-            type: "text" as const,
-            text: JSON.stringify(
-              {
-                success: true,
-                action: existing ? "updated" : "registered",
-                peer,
-              },
-              null,
-              2
-            ),
-          },
-        ],
-      };
+      try {
+        const existing = await getPeer(peerId);
+        const peer = await registerPeer(peerId, sessionId, cwd, label);
+        return successResult({
+          success: true,
+          action: existing ? "updated" : "registered",
+          peer,
+        });
+      } catch (err) {
+        logger.error("register-peer failed", { error: err });
+        return errorResult(err);
+      }
     }
   );
 }

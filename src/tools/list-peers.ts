@@ -1,5 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { listPeers } from "../services/peer-registry.js";
+import { successResult, errorResult } from "../errors.js";
+import { logger } from "../logger.js";
 
 export function registerListPeersTool(server: McpServer): void {
   server.registerTool(
@@ -18,15 +20,13 @@ export function registerListPeersTool(server: McpServer): void {
       },
     },
     async () => {
-      const peers = await listPeers();
-      return {
-        content: [
-          {
-            type: "text" as const,
-            text: JSON.stringify({ peers, count: peers.length }, null, 2),
-          },
-        ],
-      };
+      try {
+        const peers = await listPeers();
+        return successResult({ peers, count: peers.length });
+      } catch (err) {
+        logger.error("list-peers failed", { error: err });
+        return errorResult(err);
+      }
     }
   );
 }

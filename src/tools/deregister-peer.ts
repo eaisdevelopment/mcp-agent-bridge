@@ -1,6 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { deregisterPeer } from "../services/peer-registry.js";
+import { successResult, errorResult } from "../errors.js";
+import { logger } from "../logger.js";
 
 export function registerDeregisterPeerTool(server: McpServer): void {
   server.registerTool(
@@ -23,24 +25,18 @@ export function registerDeregisterPeerTool(server: McpServer): void {
       },
     },
     async ({ peerId }) => {
-      const removed = await deregisterPeer(peerId);
-      return {
-        content: [
-          {
-            type: "text" as const,
-            text: JSON.stringify(
-              {
-                success: removed,
-                message: removed
-                  ? `Peer '${peerId}' deregistered`
-                  : `Peer '${peerId}' was not registered`,
-              },
-              null,
-              2
-            ),
-          },
-        ],
-      };
+      try {
+        const removed = await deregisterPeer(peerId);
+        return successResult({
+          success: removed,
+          message: removed
+            ? `Peer '${peerId}' deregistered`
+            : `Peer '${peerId}' was not registered`,
+        });
+      } catch (err) {
+        logger.error("deregister-peer failed", { error: err });
+        return errorResult(err);
+      }
     }
   );
 }
