@@ -11,6 +11,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createTestConfig } from "../test-helpers.js";
+import { getPeer as getPeerDirect } from "../services/peer-registry.js";
 import { registerSendMessageTool } from "./send-message.js";
 import { registerRegisterPeerTool } from "./register-peer.js";
 import { registerGetHistoryTool } from "./get-history.js";
@@ -185,5 +186,117 @@ describe("cc_send_message tool", () => {
     expect(historyData.messages[0].message).toBe("Test message for history");
     expect(historyData.messages[0].response).toBe("Acknowledged");
     expect(historyData.messages[0].success).toBe(true);
+  });
+
+  it("updates sender lastSeenAt after successful send", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
+
+    const senderBefore = await getPeerDirect("backend");
+
+    // Small delay so lastSeenAt update is distinguishable
+    await new Promise((r) => setTimeout(r, 10));
+
+    mockExecFile.mockImplementation(
+      (_cmd: any, _args: any, _opts: any, callback: any) => {
+        callback(null, "Got it!", "");
+        return undefined as any;
+      },
+    );
+
+    await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
+      },
+    });
+
+    const senderAfter = await getPeerDirect("backend");
+    expect(new Date(senderAfter!.lastSeenAt).getTime()).toBeGreaterThan(
+      new Date(senderBefore!.lastSeenAt).getTime(),
+    );
+  });
+
+  it("updates target lastSeenAt after successful send", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
+
+    const targetBefore = await getPeerDirect("frontend");
+
+    await new Promise((r) => setTimeout(r, 10));
+
+    mockExecFile.mockImplementation(
+      (_cmd: any, _args: any, _opts: any, callback: any) => {
+        callback(null, "Got it!", "");
+        return undefined as any;
+      },
+    );
+
+    await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
+      },
+    });
+
+    const targetAfter = await getPeerDirect("frontend");
+    expect(new Date(targetAfter!.lastSeenAt).getTime()).toBeGreaterThan(
+      new Date(targetBefore!.lastSeenAt).getTime(),
+    );
+  });
+
+  it("does not update target lastSeenAt on failed send", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
+
+    const targetBefore = await getPeerDirect("frontend");
+
+    await new Promise((r) => setTimeout(r, 10));
+
+    mockExecFile.mockImplementation(
+      (_cmd: any, _args: any, _opts: any, callback: any) => {
+        callback(null, "", "some error");
+        // Non-zero exit code simulated through the cc-cli layer:
+        // execFile with error=null but stderr means exitCode=0 (success)
+        // We need to simulate a real failure: error with exit code
+        return undefined as any;
+      },
+    );
+
+    // For a true CLI failure, we need the execFile callback to provide an error
+    mockExecFile.mockImplementation(
+      (_cmd: any, _args: any, _opts: any, callback: any) => {
+        const error = Object.assign(new Error("failed"), {
+          killed: false,
+          signal: null,
+          code: 1,
+        });
+        callback(error, "", "CLI failed");
+        return undefined as any;
+      },
+    );
+
+    await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
+      },
+    });
+
+    const targetAfter = await getPeerDirect("frontend");
+    // Target lastSeenAt should NOT be updated on failure
+    expect(targetAfter!.lastSeenAt).toBe(targetBefore!.lastSeenAt);
+
+    // But sender lastSeenAt SHOULD be updated (sender is active)
+    const senderAfter = await getPeerDirect("backend");
+    expect(new Date(senderAfter!.lastSeenAt).getTime()).toBeGreaterThan(
+      new Date(targetBefore!.lastSeenAt).getTime(),
+    );
   });
 });

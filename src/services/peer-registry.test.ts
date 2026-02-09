@@ -9,6 +9,7 @@ import {
   getPeer,
   recordMessage,
   getHistory,
+  updateLastSeen,
 } from "./peer-registry.js";
 
 let cleanup: () => Promise<void>;
@@ -33,6 +34,8 @@ describe("registerPeer", () => {
     expect(peer.label).toBe("backend");
     expect(peer.registeredAt).toBeTruthy();
     expect(new Date(peer.registeredAt).toISOString()).toBe(peer.registeredAt);
+    expect(peer.lastSeenAt).toBeTruthy();
+    expect(peer.lastSeenAt).toBe(peer.registeredAt);
   });
 
   it("overwrites existing peer with same ID", async () => {
@@ -197,6 +200,57 @@ describe("recordMessage + getHistory", () => {
     const history = await getHistory();
     expect(history).toHaveLength(1);
     expect(history[0].message).toBe("persisted");
+  });
+});
+
+describe("lastSeenAt tracking", () => {
+  it("registerPeer sets lastSeenAt to registration time", async () => {
+    const peer = await registerPeer("be", "sess-1", "/tmp/project", "backend");
+    expect(peer.lastSeenAt).toBeDefined();
+    expect(peer.lastSeenAt).toBe(peer.registeredAt);
+  });
+
+  it("updateLastSeen updates the lastSeenAt timestamp", async () => {
+    const peer = await registerPeer("be", "sess-1", "/tmp/project", "backend");
+    const originalLastSeen = peer.lastSeenAt;
+
+    // Small delay to ensure timestamp difference
+    await new Promise((r) => setTimeout(r, 10));
+    await updateLastSeen("be");
+
+    const updated = await getPeer("be");
+    expect(updated).toBeDefined();
+    expect(updated!.lastSeenAt).not.toBe(originalLastSeen);
+    expect(new Date(updated!.lastSeenAt).getTime()).toBeGreaterThan(
+      new Date(originalLastSeen).getTime(),
+    );
+  });
+
+  it("updateLastSeen is a no-op for nonexistent peer", async () => {
+    // Should not throw
+    await updateLastSeen("nonexistent");
+  });
+
+  it("readState migrates peers without lastSeenAt", async () => {
+    // Write a state file manually with a peer missing lastSeenAt
+    const statePath = join(tempDir, "cc-bridge-state.json");
+    const legacyState = {
+      peers: {
+        legacy: {
+          peerId: "legacy",
+          sessionId: "sess-old",
+          cwd: "/tmp/old",
+          label: "Legacy Peer",
+          registeredAt: "2025-01-01T00:00:00.000Z",
+        },
+      },
+      messages: [],
+    };
+    await writeFile(statePath, JSON.stringify(legacyState), "utf-8");
+
+    const peers = await listPeers();
+    expect(peers).toHaveLength(1);
+    expect(peers[0].lastSeenAt).toBe("2025-01-01T00:00:00.000Z");
   });
 });
 
