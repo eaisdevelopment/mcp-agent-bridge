@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getPeer, recordMessage } from "../services/peer-registry.js";
+import { getPeer, recordMessage, updateLastSeen } from "../services/peer-registry.js";
 import { execClaude } from "../services/cc-cli.js";
 import { BridgeError, BridgeErrorCode, successResult, errorResult } from "../errors.js";
 import { logger } from "../logger.js";
@@ -63,6 +63,18 @@ export function registerSendMessageTool(server: McpServer): void {
           const result = await execClaude(to.sessionId, prefixed, to.cwd);
           const durationMs = Date.now() - startMs;
           const success = result.exitCode === 0;
+
+          // Update sender lastSeenAt (sender is always active)
+          try { await updateLastSeen(fromPeerId); } catch (e) {
+            logger.error("Failed to update lastSeenAt for sender", { error: e });
+          }
+
+          // Update target lastSeenAt only on success
+          if (success) {
+            try { await updateLastSeen(toPeerId); } catch (e) {
+              logger.error("Failed to update lastSeenAt for target", { error: e });
+            }
+          }
 
           await recordMessage({
             fromPeerId,

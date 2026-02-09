@@ -12,6 +12,7 @@ export const configSchema = z.object({
     .enum(["debug", "info", "warn", "error"])
     .default("info"),
   CC_BRIDGE_CLAUDE_PATH: z.string().default("claude"),
+  CC_BRIDGE_STALE_TIMEOUT_MS: z.coerce.number().int().min(0).default(1_800_000),
 });
 
 export type Config = z.infer<typeof configSchema>;

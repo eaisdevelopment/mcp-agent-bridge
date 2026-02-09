@@ -37,14 +37,24 @@ function emptyState(): BridgeState {
   return { peers: {}, messages: [] };
 }
 
+/** Migrate legacy state: ensure all peers have lastSeenAt field. */
+function migrateState(state: BridgeState): BridgeState {
+  for (const peer of Object.values(state.peers)) {
+    if (!peer.lastSeenAt) {
+      peer.lastSeenAt = peer.registeredAt;
+    }
+  }
+  return state;
+}
+
 async function readState(): Promise<BridgeState> {
   const statePath = getStatePath();
   try {
     const raw = await fs.readFile(statePath, "utf-8");
-    return JSON.parse(raw) as BridgeState;
+    return migrateState(JSON.parse(raw) as BridgeState);
   } catch (err: unknown) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      return emptyState();
+      return migrateState(emptyState());
     }
     if (err instanceof SyntaxError) {
       // Corrupt JSON -- auto-recover with backup
@@ -57,7 +67,7 @@ async function readState(): Promise<BridgeState> {
       logger.warn(
         `STATE_CORRUPT: State file corrupt (invalid JSON), backed up to ${backupPath}. Starting with empty state.`,
       );
-      return emptyState();
+      return migrateState(emptyState());
     }
     throw new BridgeError(
       BridgeErrorCode.STATE_WRITE_FAILED,
@@ -159,16 +169,29 @@ export async function registerPeer(
 ): Promise<PeerInfo> {
   return withLock(async () => {
     const state = await readState();
+    const now = new Date().toISOString();
     const peer: PeerInfo = {
       peerId,
       sessionId,
       cwd,
       label,
-      registeredAt: new Date().toISOString(),
+      registeredAt: now,
+      lastSeenAt: now,
     };
     state.peers[peerId] = peer;
     await writeState(state);
     return peer;
+  });
+}
+
+export async function updateLastSeen(peerId: string): Promise<void> {
+  return withLock(async () => {
+    const state = await readState();
+    const peer = state.peers[peerId];
+    if (peer) {
+      peer.lastSeenAt = new Date().toISOString();
+      await writeState(state);
+    }
   });
 }
 

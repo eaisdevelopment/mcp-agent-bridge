@@ -4,6 +4,7 @@ export interface PeerInfo {
   cwd: string;
   label: string;
   registeredAt: string;
+  lastSeenAt: string;
 }
 
 export interface MessageRecord {
