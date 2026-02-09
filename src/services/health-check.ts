@@ -1,11 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { getConfig } from "../config.js";
 import { SERVER_VERSION } from "../constants.js";
-
-const execFileAsync = promisify(execFile);
 
 /* ------------------------------------------------------------------ */
 /*  Types (local -- only used by this module)                         */
@@ -92,17 +89,18 @@ async function checkLockMechanism(): Promise<CheckResult> {
 }
 
 /** HLTH-03: Check Claude CLI availability. */
-async function checkClaudeCli(): Promise<ClaudeCliCheckResult> {
+function checkClaudeCli(): Promise<ClaudeCliCheckResult> {
   const claudePath = getConfig().CC_BRIDGE_CLAUDE_PATH;
 
-  try {
-    const { stdout } = await execFileAsync(claudePath, ["--version"], {
-      timeout: 5000,
+  return new Promise((resolve) => {
+    execFile(claudePath, ["--version"], { timeout: 5000 }, (error, stdout) => {
+      if (error) {
+        resolve({ ok: false, message: `Claude CLI not found at '${claudePath}'` });
+        return;
+      }
+      resolve({ ok: true, message: "Claude CLI found", version: (stdout || "").trim() });
     });
-    return { ok: true, message: "Claude CLI found", version: stdout.trim() };
-  } catch {
-    return { ok: false, message: `Claude CLI not found at '${claudePath}'` };
-  }
+  });
 }
 
 /* ------------------------------------------------------------------ */
