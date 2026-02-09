@@ -30,11 +30,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Setting `CC_BRIDGE_LOG_LEVEL=debug` produces verbose stderr output; setting it to `error` suppresses info/warn; stdout remains clean in all cases
   4. Corrupting the state file JSON, killing a lock holder, timing out the CLI subprocess, or removing the `claude` binary all produce clear MCP error responses without crashing the server
   5. Starting the server without `claude` on PATH produces a clear startup warning on stderr
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Config foundation: Zod config module, BridgeError system, constants refactor
+- [ ] 01-02-PLAN.md -- Logger, startup validation, and index.ts rewrite
+- [ ] 01-03-PLAN.md -- Service hardening: peer-registry and cc-cli config integration
+- [ ] 01-04-PLAN.md -- Tool handler error wrapping across all 5 tools
 
 ### Phase 2: Test Suite
 **Goal**: Every tool handler, service module, and end-to-end workflow has automated tests that run in isolation
@@ -103,7 +105,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Configuration and Error Hardening | 0/TBD | Not started | - |
+| 1. Configuration and Error Hardening | 0/4 | Planning complete | - |
 | 2. Test Suite | 0/TBD | Not started | - |
 | 3. Health Check and Stale Peer Detection | 0/TBD | Not started | - |
 | 4. Package Hygiene | 0/TBD | Not started | - |
