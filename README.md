@@ -44,7 +44,7 @@ CC_Backend                                CC_Frontend
 
 Each CC instance spawns its own MCP server process via stdio transport. Shared state is persisted to `~/cloud_code_bridge/cc-bridge-state.json` with file locking so both processes see the same peer registry and message history.
 
-Messages are relayed by calling `claude --resume <sessionId> -p "message"` as a subprocess. File locking uses `fs.writeFile` with `flag: "wx"` (O_CREAT | O_EXCL), stale lock detection via `process.kill(pid, 0)`, and atomic writes via temp-file-then-rename.
+Messages are relayed by calling `claude --resume <sessionId> -p "message"` as a subprocess. Before sending, the bridge validates that the target session file exists on disk — if the session has ended, it fails immediately instead of waiting for timeout. On timeout, it retries once with a shorter 30-second timeout. File locking uses `fs.writeFile` with `flag: "wx"` (O_CREAT | O_EXCL), stale lock detection via `process.kill(pid, 0)`, and atomic writes via temp-file-then-rename.
 
 ## Tools Reference
 
@@ -145,21 +145,29 @@ To override defaults, set environment variables in your `.mcp.json`:
 
 ## Usage Workflow
 
-1. Start two Claude Code sessions, one per repo. Note each session ID.
+1. Start two Claude Code sessions, one per repo.
 
-2. In CC_Backend, register both peers:
+2. In each session, find your session ID:
+
+   ```bash
+   ls -t ~/.claude/projects/$(pwd | tr '/' '-')/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl
+   ```
+
+3. Each session registers itself on the bridge:
 
    ```
+   # In CC_Backend:
    Use cc_register_peer:
      peerId: "backend", sessionId: "<backend-session-id>",
      cwd: "/path/to/backend", label: "CC_Backend"
 
+   # In CC_Frontend:
    Use cc_register_peer:
      peerId: "frontend", sessionId: "<frontend-session-id>",
      cwd: "/path/to/frontend", label: "CC_Frontend"
    ```
 
-3. Send a message from backend to frontend:
+4. Send a message from either session:
 
    ```
    Use cc_send_message:
@@ -167,15 +175,15 @@ To override defaults, set environment variables in your `.mcp.json`:
      message: "What endpoint does the login form POST to?"
    ```
 
-4. The bridge resumes the frontend CC session, delivers the message, and returns the response.
+5. The bridge validates the target session exists, resumes it with the message, and returns the response. On timeout, it automatically retries once.
 
-5. Check message history at any time:
+6. Check message history at any time:
 
    ```
    Use cc_get_history to see all exchanges, or filter by peerId.
    ```
 
-6. When done, deregister peers:
+7. When done, deregister peers:
 
    ```
    Use cc_deregister_peer:
@@ -231,10 +239,11 @@ The bridge stores state at `~/cloud_code_bridge/cc-bridge-state.json` by default
 | Error | Cause | Fix |
 |-------|-------|-----|
 | `CLI_NOT_FOUND` | `claude` not on PATH | Install Claude Code or set `CC_BRIDGE_CLAUDE_PATH` |
-| `CLI_TIMEOUT` | Response took > 2 min | Increase `CC_BRIDGE_TIMEOUT_MS` |
+| `CLI_TIMEOUT` | Response took > 2 min (retried once at 30s) | Increase `CC_BRIDGE_TIMEOUT_MS`, or check target session is active |
 | `LOCK_TIMEOUT` | Lock held by dead process | Delete `<state-path>/cc-bridge-state.json.lock` |
 | `STATE_CORRUPT` | Invalid JSON in state | Auto-recovers; backup saved as `.corrupt.<timestamp>` |
 | `PEER_NOT_FOUND` | Target peer not registered | Register both peers before sending messages |
+| `CLI_EXEC_FAILED` (session not found) | Target session file missing | Ask peer to re-register with current session ID |
 
 ## Development
 
@@ -260,7 +269,7 @@ src/
 ├── startup.ts               # First-run prompt, config loading, CLI validation
 ├── types.ts                 # Core interfaces (PeerInfo, MessageRecord, etc.)
 ├── services/
-│   ├── cc-cli.ts            # CLI subprocess wrapper (execFile with claude --resume)
+│   ├── cc-cli.ts            # CLI subprocess wrapper (spawn with claude --resume)
 │   ├── health-check.ts      # State file, lock, and CLI diagnostic checks
 │   └── peer-registry.ts     # File-based shared state with locking
 └── tools/
