@@ -45,7 +45,7 @@ Your peer identity: **peerId=\`${peerId}\`**, **label=\`${label}\`**
 ### On Session Start
 1. Find your Claude Code session ID:
    \`\`\`bash
-   ls -t ~/.claude/projects/$(pwd | tr '/' '-')/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl
+   ls -t ~/.claude/projects/$(pwd | sed 's/[^a-zA-Z0-9-]/-/g')/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl
    \`\`\`
 2. Register yourself on the bridge:
    - Use \`cc_register_peer\` with peerId="${peerId}", label="${label}"

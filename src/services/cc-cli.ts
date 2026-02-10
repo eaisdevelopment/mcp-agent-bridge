@@ -14,7 +14,8 @@ export async function validateSession(
   sessionId: string,
   cwd: string,
 ): Promise<boolean> {
-  const projectHash = cwd.replace(/\//g, "-");
+  // Claude Code replaces all non-alphanumeric chars (except -) with dashes
+  const projectHash = cwd.replace(/[^a-zA-Z0-9-]/g, "-");
   const sessionPath = path.join(
     os.homedir(),
     ".claude",

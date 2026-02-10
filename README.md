@@ -150,7 +150,7 @@ To override defaults, set environment variables in your `.mcp.json`:
 2. In each session, find your session ID:
 
    ```bash
-   ls -t ~/.claude/projects/$(pwd | tr '/' '-')/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl
+   ls -t ~/.claude/projects/$(pwd | sed 's/[^a-zA-Z0-9-]/-/g')/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl
    ```
 
 3. Each session registers itself on the bridge:
