@@ -1,0 +1,60 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.OWNER/cc-bridge-mcp-server",
+  "title": "CC Bridge MCP Server",
+  "description": "MCP server for inter-Claude-Code session communication bridge. Enables two Claude Code instances to collaborate across repositories by relaying messages via CLI subprocess calls.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/OWNER/cc-bridge-mcp-server",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "cc-bridge-mcp-server",
+      "version": "0.1.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "CC_BRIDGE_STATE_PATH",
+          "description": "Directory for state file and logs",
+          "default": "~/cloud_code_bridge",
+          "isRequired": false
+        },
+        {
+          "name": "CC_BRIDGE_TIMEOUT_MS",
+          "description": "CLI subprocess timeout in milliseconds",
+          "default": "120000",
+          "isRequired": false
+        },
+        {
+          "name": "CC_BRIDGE_CHAR_LIMIT",
+          "description": "Max characters in CLI message (0 = unlimited)",
+          "default": "0",
+          "isRequired": false
+        },
+        {
+          "name": "CC_BRIDGE_LOG_LEVEL",
+          "description": "Log verbosity: debug, info, warn, error",
+          "default": "info",
+          "isRequired": false
+        },
+        {
+          "name": "CC_BRIDGE_CLAUDE_PATH",
+          "description": "Path to the claude CLI executable",
+          "default": "claude",
+          "isRequired": false
+        },
+        {
+          "name": "CC_BRIDGE_STALE_TIMEOUT_MS",
+          "description": "Time in ms before a peer is flagged as stale (0 = disabled)",
+          "default": "1800000",
+          "isRequired": false
+        }
+      ]
+    }
+  ]
+}

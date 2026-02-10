@@ -42,6 +42,7 @@
     "url": "https://github.com/OWNER/cc-bridge-mcp-server/issues"
   },
   "license": "ISC",
+  "mcpName": "io.github.OWNER/cc-bridge-mcp-server",
   "engines": {
     "node": ">=18"
   },
