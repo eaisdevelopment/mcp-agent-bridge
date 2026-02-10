@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-09)
+See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** Two Claude Code sessions can exchange messages in real-time while staying fully isolated in their own repos
-**Current focus:** All phases complete -- milestone ready for completion
+**Current focus:** v1.0 shipped — planning next milestone
 
 ## Current Position
 
-Phase: 5 of 5 (Documentation and Registry) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase Complete -- ALL PHASES DONE
-Last activity: 2026-02-10 -- Published to npm (0.1.0) and MCP Registry (io.github.eaisdevelopment)
+Phase: All v1.0 phases complete (5/5)
+Plan: All plans complete (12/12)
+Status: Milestone v1.0 MVP shipped
+Last activity: 2026-02-10 — Milestone archived, git tagged v1.0
 
-Progress: [████████████] 100%
+Progress: [████████████] 100% (v1.0)
 
 ## Performance Metrics
 
@@ -33,65 +33,17 @@ Progress: [████████████] 100%
 | 04-package-hygiene | 2 | 2min | 1min |
 | 05-documentation-and-registry | 2 | 5min | 3min |
 
-**Recent Trend:**
-- Last 5 plans: 04-01 (1min), 04-02 (1min), 05-01 (3min), 05-02 (2min)
-- Trend: Consistent
-
 *Updated after each plan completion*
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- [Roadmap]: Config + error handling first because config layer is prerequisite for test isolation and cross-platform support
-- [Roadmap]: Testing before new features so health check and stale peers can be developed with test coverage from the start
-- [Roadmap]: 5 phases at standard depth; research suggested similar structure
-- [01-01]: Flat CC_BRIDGE_* prefix for all env vars (5 total)
-- [01-01]: Default char limit 0 (no limit) per user decision over original 25000
-- [01-01]: Default state path ~/cloud_code_bridge per user decision over os.tmpdir()
-- [01-01]: Config object frozen after loading to prevent mutation
-- [01-01]: BridgeError message format: CODE: message. suggestion
-- [01-02]: Timestamped log filenames per server start (no rotation needed)
-- [01-02]: Pre-config logger writes stderr-only until startup completes
-- [01-02]: First-run config persisted to ~/.cc-bridge-config.json
-- [01-02]: Claude CLI missing is warn-only; does not block startup
-- [01-02]: Global error handlers do not exit process (MCP server tries to continue)
-- [01-03]: State/lock paths derived at call time (not module load) for test isolation via resetConfig()
-- [01-03]: Corrupt state auto-recovery: backup + warning log + fresh empty state
-- [01-03]: CLI char limit 0 means no truncation (conditional logic)
-- [01-03]: CLI errors enriched in stderr field of CliExecResult (not thrown exceptions)
-- [01-04]: Nested try/catch around recordMessage in send-message catch path to prevent unhandled rejection
-- [01-04]: Peer-not-found uses BridgeError with PEER_NOT_FOUND code and suggestion to register first
-- [02-01]: Vitest resolve.extensions [.ts, .js, .json] for Node16 ESM .js-to-.ts resolution
-- [02-01]: createTestConfig uses CC_BRIDGE_LOG_LEVEL error to suppress noisy test output
-- [02-01]: Test files excluded from tsconfig compilation to prevent dist pollution
-- [02-02]: Tool tests use InMemoryTransport.createLinkedPair() + Client.callTool() to exercise full MCP protocol path
-- [02-02]: Tests that need setup data register multiple tools on same McpServer for MCP-protocol test data creation
-- [02-02]: send-message and get-history tests mock node:child_process identically to cc-cli.test.ts pattern
-- [03-01]: Callback-style execFile (not promisify) for mock compatibility with vitest
-- [03-01]: Health check lock uses separate .health-lock path to avoid production lock interference
-- [03-01]: Health check types defined locally (not in types.ts) since only used by health-check module
-- [03-01]: Diagnostic sub-check pattern: each returns {ok, message}, orchestrator aggregates with Promise.all
-- [03-02]: CC_BRIDGE_STALE_TIMEOUT_MS default 30min; timeout=0 disables stale detection
-- [03-02]: Sender lastSeenAt always updated on send; target only on success
-- [03-02]: updateLastSeen wrapped in try/catch to never break send-message flow
-- [03-02]: migrateState() in readState() for backward-compatible schema evolution (no migration step)
-- [03-02]: potentiallyStale computed in tool handler (not service layer) as enriched response field
-- [04-01]: createRequire over import assertion for package.json (TS 5.7+ regression workaround)
-- [04-01]: OWNER placeholder in repository URLs (no git remote configured)
-- [04-01]: Version 0.1.0 signals pre-1.0 development stage
-- [04-02]: No decisions needed - plan followed exactly as written
-- [05-01]: No decisions needed - plan followed exactly as written
-- [05-02]: GitHub username: eaisdevelopment for all OWNER placeholders
-- [05-02]: Author: Pavlo Sidelov <pavlo@essentialai.com>
-- [05-02]: server.json added to npm files array for MCP Registry discoverability
+All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 ### Pending Todos
 
-None -- all work complete.
+None — all v1.0 work complete.
 
 ### Blockers/Concerns
 
@@ -100,5 +52,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: All 5 phases complete. Package published to npm and MCP Registry.
+Stopped at: v1.0 milestone archived and tagged.
 Resume file: None
+Next step: `/gsd:new-milestone` to define v1.1+ scope
