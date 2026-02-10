@@ -43,7 +43,11 @@ export class Logger {
     const timestamp = new Date().toISOString();
     const humanLine = `${timestamp} [${level.toUpperCase()}] ${message}\n`;
 
-    process.stderr.write(humanLine);
+    try {
+      process.stderr.write(humanLine);
+    } catch {
+      // Ignore EPIPE / broken pipe -- parent process disconnected
+    }
     this.textStream?.write(humanLine);
 
     const entry: Record<string, unknown> = { timestamp, level, message };

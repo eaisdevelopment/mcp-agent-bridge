@@ -15,6 +15,12 @@ import { registerHealthCheckTool } from "./tools/health-check.js";
 // ---------------------------------------------------------------------------
 
 process.on("uncaughtException", (err) => {
+  // EPIPE means the parent process disconnected -- exit cleanly
+  if ((err as NodeJS.ErrnoException).code === "EPIPE") {
+    logger.close();
+    process.exit(0);
+    return;
+  }
   logger.error(`Uncaught exception: ${err.message}`, { stack: err.stack });
   // Do NOT exit -- MCP server should try to continue
 });
