@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { execFile } from "node:child_process";
 
-vi.mock("node:child_process", () => ({
-  execFile: vi.fn(),
+vi.mock("../services/cc-cli.js", () => ({
+  execClaude: vi.fn(),
+  validateSession: vi.fn(),
 }));
 
-const mockExecFile = vi.mocked(execFile);
+import { execClaude, validateSession } from "../services/cc-cli.js";
+const mockExecClaude = vi.mocked(execClaude);
+const mockValidateSession = vi.mocked(validateSession);
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -22,6 +24,7 @@ let cleanup: () => Promise<void>;
 
 beforeEach(async () => {
   vi.clearAllMocks();
+  mockValidateSession.mockResolvedValue(true);
   const ctx = await createTestConfig();
   cleanup = ctx.cleanup;
   server = new McpServer({ name: "test", version: "1.0.0" });
@@ -57,12 +60,11 @@ describe("cc_send_message tool", () => {
     await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
     await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
 
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        callback(null, "Got it!", "");
-        return undefined as any;
-      },
-    );
+    mockExecClaude.mockResolvedValue({
+      stdout: "Got it!",
+      stderr: "",
+      exitCode: 0,
+    });
 
     const result = await client.callTool({
       name: "cc_send_message",
@@ -120,21 +122,40 @@ describe("cc_send_message tool", () => {
     expect(data.error).toBe("PEER_NOT_FOUND");
   });
 
-  it("handles CLI timeout", async () => {
+  it("returns error when session file not found", async () => {
     await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
     await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
 
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        const error = Object.assign(new Error("timeout"), {
-          killed: true,
-          signal: "SIGTERM",
-          code: null,
-        });
-        callback(error, "", "");
-        return undefined as any;
+    mockValidateSession.mockResolvedValue(false);
+
+    const result = await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
       },
+    });
+
+    expect(result.isError).toBe(true);
+    const data = JSON.parse(
+      (result.content as Array<{ type: string; text: string }>)[0].text,
     );
+    expect(data.success).toBe(false);
+    expect(data.error).toBe("CLI_EXEC_FAILED");
+    expect(data.message).toContain("not found");
+  });
+
+  it("handles CLI timeout with retry", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
+
+    // Both attempts time out (exitCode: null)
+    mockExecClaude.mockResolvedValue({
+      stdout: "",
+      stderr: "CLI_TIMEOUT: CLI subprocess timed out after 180000ms",
+      exitCode: null,
+    });
 
     const result = await client.callTool({
       name: "cc_send_message",
@@ -150,18 +171,19 @@ describe("cc_send_message tool", () => {
     );
     expect(data.success).toBe(false);
     expect(data.error).toContain("CLI_TIMEOUT");
+    // Should have been called twice (initial + retry)
+    expect(mockExecClaude).toHaveBeenCalledTimes(2);
   });
 
   it("records message in history", async () => {
     await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
     await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
 
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        callback(null, "Acknowledged", "");
-        return undefined as any;
-      },
-    );
+    mockExecClaude.mockResolvedValue({
+      stdout: "Acknowledged",
+      stderr: "",
+      exitCode: 0,
+    });
 
     await client.callTool({
       name: "cc_send_message",
@@ -197,12 +219,11 @@ describe("cc_send_message tool", () => {
     // Small delay so lastSeenAt update is distinguishable
     await new Promise((r) => setTimeout(r, 10));
 
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        callback(null, "Got it!", "");
-        return undefined as any;
-      },
-    );
+    mockExecClaude.mockResolvedValue({
+      stdout: "Got it!",
+      stderr: "",
+      exitCode: 0,
+    });
 
     await client.callTool({
       name: "cc_send_message",
@@ -227,12 +248,11 @@ describe("cc_send_message tool", () => {
 
     await new Promise((r) => setTimeout(r, 10));
 
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        callback(null, "Got it!", "");
-        return undefined as any;
-      },
-    );
+    mockExecClaude.mockResolvedValue({
+      stdout: "Got it!",
+      stderr: "",
+      exitCode: 0,
+    });
 
     await client.callTool({
       name: "cc_send_message",
@@ -257,28 +277,11 @@ describe("cc_send_message tool", () => {
 
     await new Promise((r) => setTimeout(r, 10));
 
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        callback(null, "", "some error");
-        // Non-zero exit code simulated through the cc-cli layer:
-        // execFile with error=null but stderr means exitCode=0 (success)
-        // We need to simulate a real failure: error with exit code
-        return undefined as any;
-      },
-    );
-
-    // For a true CLI failure, we need the execFile callback to provide an error
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        const error = Object.assign(new Error("failed"), {
-          killed: false,
-          signal: null,
-          code: 1,
-        });
-        callback(error, "", "CLI failed");
-        return undefined as any;
-      },
-    );
+    mockExecClaude.mockResolvedValue({
+      stdout: "",
+      stderr: "CLI_EXEC_FAILED: claude exited with code 1. stderr: CLI failed",
+      exitCode: 1,
+    });
 
     await client.callTool({
       name: "cc_send_message",

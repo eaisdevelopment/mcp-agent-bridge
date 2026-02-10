@@ -1,14 +1,44 @@
 import { spawn } from "node:child_process";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { CliExecResult } from "../types.js";
 import { getConfig } from "../config.js";
+import { logger } from "../logger.js";
+
+/**
+ * Check whether a Claude Code session file exists on disk.
+ * Returns false if the file is missing (session ended or ID is wrong).
+ */
+export async function validateSession(
+  sessionId: string,
+  cwd: string,
+): Promise<boolean> {
+  const projectHash = cwd.replace(/\//g, "-");
+  const sessionPath = path.join(
+    os.homedir(),
+    ".claude",
+    "projects",
+    projectHash,
+    `${sessionId}.jsonl`,
+  );
+  try {
+    await fs.access(sessionPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function execClaude(
   sessionId: string,
   message: string,
   cwd: string,
+  timeoutMs?: number,
 ): Promise<CliExecResult> {
   return new Promise((resolve) => {
     const config = getConfig();
+    const effectiveTimeout = timeoutMs ?? config.CC_BRIDGE_TIMEOUT_MS;
 
     // Apply character limit: 0 means no truncation
     const truncated =
@@ -49,7 +79,7 @@ export function execClaude(
     const timer = setTimeout(() => {
       killed = true;
       child.kill("SIGTERM");
-    }, config.CC_BRIDGE_TIMEOUT_MS);
+    }, effectiveTimeout);
 
     child.stdout.on("data", (chunk: Buffer) => {
       stdout += chunk.toString();
@@ -84,7 +114,7 @@ export function execClaude(
       if (killed) {
         resolve({
           stdout: stdout || "",
-          stderr: `CLI_TIMEOUT: CLI subprocess timed out after ${config.CC_BRIDGE_TIMEOUT_MS}ms. Increase CC_BRIDGE_TIMEOUT_MS if needed.`,
+          stderr: `CLI_TIMEOUT: CLI subprocess timed out after ${effectiveTimeout}ms`,
           exitCode: null,
         });
         return;

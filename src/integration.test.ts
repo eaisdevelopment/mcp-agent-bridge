@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { execFile } from "node:child_process";
 
-vi.mock("node:child_process", () => ({
-  execFile: vi.fn(),
+vi.mock("./services/cc-cli.js", () => ({
+  execClaude: vi.fn(),
+  validateSession: vi.fn(),
 }));
 
-const mockExecFile = vi.mocked(execFile);
+import { execClaude, validateSession } from "./services/cc-cli.js";
+const mockExecClaude = vi.mocked(execClaude);
+const mockValidateSession = vi.mocked(validateSession);
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -23,6 +25,7 @@ let cleanup: () => Promise<void>;
 
 beforeEach(async () => {
   vi.clearAllMocks();
+  mockValidateSession.mockResolvedValue(true);
   const ctx = await createTestConfig();
   cleanup = ctx.cleanup;
   server = new McpServer({ name: "test", version: "1.0.0" });
@@ -94,12 +97,11 @@ describe("Integration: register -> send -> history -> deregister", () => {
     expect(peerIds).toContain("frontend");
 
     // 4. Send message from backend to frontend
-    mockExecFile.mockImplementation(
-      (_cmd: any, _args: any, _opts: any, callback: any) => {
-        callback(null, "Hello from frontend!", "");
-        return undefined as any;
-      },
-    );
+    mockExecClaude.mockResolvedValue({
+      stdout: "Hello from frontend!",
+      stderr: "",
+      exitCode: 0,
+    });
 
     const sendResult = parseResult(
       await client.callTool({

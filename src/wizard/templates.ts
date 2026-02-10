@@ -43,16 +43,23 @@ You are participating in a cross-team collaboration via CC Bridge.
 Your peer identity: **peerId=\`${peerId}\`**, **label=\`${label}\`**
 
 ### On Session Start
-1. Register yourself on the bridge:
+1. Find your Claude Code session ID:
+   \`\`\`bash
+   ls -t ~/.claude/projects/$(pwd | tr '/' '-')/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl
+   \`\`\`
+2. Register yourself on the bridge:
    - Use \`cc_register_peer\` with peerId="${peerId}", label="${label}"
-   - Your sessionId and cwd will be provided to you
+   - Set sessionId to the UUID from step 1
+   - Set cwd to your project working directory (\`pwd\`)
 
 ### When You Receive Messages
-- Messages from other peers arrive prefixed with \`[From <label> (<peerId>)]:\`
-- Read carefully, investigate the issue, and reply via \`cc_send_message\`
+- Messages from other peers arrive with a \`[CC Bridge message from ...]\` header
+- Your entire response is automatically relayed back to the sender
+- Do NOT use \`cc_send_message\` to reply — just answer directly and normally
+- Read carefully, investigate the issue, and respond with specifics
 
-### Communication Rules
-- Always use \`cc_send_message\` to communicate with other peers (e.g. toPeerId="${otherPeerId}")
+### Sending Messages
+- Use \`cc_send_message\` to initiate conversations with other peers (e.g. toPeerId="${otherPeerId}")
 - Be specific about what you changed when reporting fixes
 - Include file names and line numbers in your responses
 `;
