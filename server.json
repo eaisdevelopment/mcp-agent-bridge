@@ -3,7 +3,7 @@
   "name": "io.github.eaisdevelopment/cc-bridge-mcp-server",
   "title": "Claude Code Bridge from Essential AI Solutions (essentialai.uk)",
   "description": "MCP bridge for inter-session communication between Claude Code instances",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "repository": {
     "url": "https://github.com/eaisdevelopment/cc-bridge-mcp-server",
     "source": "github"
@@ -12,7 +12,7 @@
     {
       "registryType": "npm",
       "identifier": "@essentialai/cc-bridge-mcp-server",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
