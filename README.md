@@ -241,7 +241,7 @@ The bridge stores state at `~/cloud_code_bridge/cc-bridge-state.json` by default
 Build from source:
 
 ```bash
-git clone https://github.com/OWNER/cc-bridge-mcp-server.git
+git clone https://github.com/eaisdevelopment/cc-bridge-mcp-server.git
 cd cc-bridge-mcp-server
 npm install
 npm run build

@@ -10,7 +10,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "server.json"
   ],
   "scripts": {
     "start": "node dist/index.js",
@@ -35,14 +36,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/OWNER/cc-bridge-mcp-server.git"
+    "url": "https://github.com/eaisdevelopment/cc-bridge-mcp-server.git"
   },
-  "homepage": "https://github.com/OWNER/cc-bridge-mcp-server#readme",
+  "homepage": "https://github.com/eaisdevelopment/cc-bridge-mcp-server#readme",
   "bugs": {
-    "url": "https://github.com/OWNER/cc-bridge-mcp-server/issues"
+    "url": "https://github.com/eaisdevelopment/cc-bridge-mcp-server/issues"
   },
+  "author": "Pavlo Sidelov <pavlo@essentialai.com>",
   "license": "ISC",
-  "mcpName": "io.github.OWNER/cc-bridge-mcp-server",
+  "mcpName": "io.github.eaisdevelopment/cc-bridge-mcp-server",
   "engines": {
     "node": ">=18"
   },

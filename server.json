@@ -1,11 +1,11 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.OWNER/cc-bridge-mcp-server",
+  "name": "io.github.eaisdevelopment/cc-bridge-mcp-server",
   "title": "CC Bridge MCP Server",
   "description": "MCP server for inter-Claude-Code session communication bridge. Enables two Claude Code instances to collaborate across repositories by relaying messages via CLI subprocess calls.",
   "version": "0.1.0",
   "repository": {
-    "url": "https://github.com/OWNER/cc-bridge-mcp-server",
+    "url": "https://github.com/eaisdevelopment/cc-bridge-mcp-server",
     "source": "github"
   },
   "packages": [
