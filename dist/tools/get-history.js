@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { getHistory } from "../services/peer-registry.js";
+import { successResult, errorResult } from "../errors.js";
+import { logger } from "../logger.js";
 export function registerGetHistoryTool(server) {
     server.registerTool("cc_get_history", {
         title: "Get Message History",
@@ -24,15 +26,14 @@ export function registerGetHistoryTool(server) {
             openWorldHint: false,
         },
     }, async ({ peerId, limit }) => {
-        const messages = await getHistory(peerId, limit);
-        return {
-            content: [
-                {
-                    type: "text",
-                    text: JSON.stringify({ messages, count: messages.length }, null, 2),
-                },
-            ],
-        };
+        try {
+            const messages = await getHistory(peerId, limit);
+            return successResult({ messages, count: messages.length });
+        }
+        catch (err) {
+            logger.error("get-history failed", { error: err });
+            return errorResult(err);
+        }
     });
 }
 //# sourceMappingURL=get-history.js.map

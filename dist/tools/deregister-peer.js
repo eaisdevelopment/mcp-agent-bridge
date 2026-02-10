@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { deregisterPeer } from "../services/peer-registry.js";
+import { successResult, errorResult } from "../errors.js";
+import { logger } from "../logger.js";
 export function registerDeregisterPeerTool(server) {
     server.registerTool("cc_deregister_peer", {
         title: "Deregister Peer",
@@ -17,20 +19,19 @@ export function registerDeregisterPeerTool(server) {
             openWorldHint: false,
         },
     }, async ({ peerId }) => {
-        const removed = await deregisterPeer(peerId);
-        return {
-            content: [
-                {
-                    type: "text",
-                    text: JSON.stringify({
-                        success: removed,
-                        message: removed
-                            ? `Peer '${peerId}' deregistered`
-                            : `Peer '${peerId}' was not registered`,
-                    }, null, 2),
-                },
-            ],
-        };
+        try {
+            const removed = await deregisterPeer(peerId);
+            return successResult({
+                success: removed,
+                message: removed
+                    ? `Peer '${peerId}' deregistered`
+                    : `Peer '${peerId}' was not registered`,
+            });
+        }
+        catch (err) {
+            logger.error("deregister-peer failed", { error: err });
+            return errorResult(err);
+        }
     });
 }
 //# sourceMappingURL=deregister-peer.js.map

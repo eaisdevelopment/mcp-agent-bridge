@@ -1,5 +1,6 @@
-export const CHARACTER_LIMIT = 25_000;
-export const CLI_TIMEOUT_MS = 120_000;
-export const SERVER_NAME = "cc-bridge-mcp-server";
-export const SERVER_VERSION = "1.0.0";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const pkg = require("../package.json");
+export const SERVER_NAME = "Claude Code Bridge from Essential AI Solutions (essentialai.uk)";
+export const SERVER_VERSION = pkg.version;
 //# sourceMappingURL=constants.js.map

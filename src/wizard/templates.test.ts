@@ -6,7 +6,7 @@ describe("mcpJsonContent", () => {
     const result = mcpJsonContent("/usr/local/bin/npx");
     const parsed = JSON.parse(result);
     expect(parsed.mcpServers["cc-bridge"].command).toBe("/usr/local/bin/npx");
-    expect(parsed.mcpServers["cc-bridge"].args).toContain("cc-bridge-mcp-server");
+    expect(parsed.mcpServers["cc-bridge"].args).toContain("@essentialai/cc-bridge-mcp-server");
   });
 });
 

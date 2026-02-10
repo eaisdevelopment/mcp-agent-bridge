@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.eaisdevelopment/cc-bridge-mcp-server",
-  "title": "CC Bridge MCP Server",
+  "title": "Claude Code Bridge from Essential AI Solutions (essentialai.uk)",
   "description": "MCP bridge for inter-session communication between Claude Code instances",
   "version": "0.1.0",
   "repository": {
@@ -11,7 +11,7 @@
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "cc-bridge-mcp-server",
+      "identifier": "@essentialai/cc-bridge-mcp-server",
       "version": "0.1.0",
       "runtimeHint": "npx",
       "transport": {

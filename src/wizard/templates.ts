@@ -3,7 +3,7 @@ export function mcpJsonContent(npxPath: string): string {
     mcpServers: {
       "cc-bridge": {
         command: npxPath,
-        args: ["-y", "cc-bridge-mcp-server"],
+        args: ["-y", "@essentialai/cc-bridge-mcp-server"],
         env: {
           CC_BRIDGE_LOG_LEVEL: "info",
           CC_BRIDGE_TIMEOUT_MS: "180000",
@@ -22,7 +22,7 @@ export function mcpJsonMerge(
   if (!parsed.mcpServers) parsed.mcpServers = {};
   parsed.mcpServers["cc-bridge"] = {
     command: npxPath,
-    args: ["-y", "cc-bridge-mcp-server"],
+    args: ["-y", "@essentialai/cc-bridge-mcp-server"],
     env: {
       CC_BRIDGE_LOG_LEVEL: "info",
       CC_BRIDGE_TIMEOUT_MS: "180000",

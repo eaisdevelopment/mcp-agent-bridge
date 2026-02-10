@@ -1,6 +1,6 @@
-# cc-bridge-mcp-server
+# @essentialai/cc-bridge-mcp-server
 
-MCP server for inter-Claude-Code session communication bridge.
+Claude Code Bridge from Essential AI Solutions (essentialai.uk) — MCP server for inter-Claude-Code session communication.
 
 ## Quick Start
 
@@ -11,7 +11,7 @@ MCP server for inter-Claude-Code session communication bridge.
   "mcpServers": {
     "cc-bridge": {
       "command": "npx",
-      "args": ["-y", "cc-bridge-mcp-server"],
+      "args": ["-y", "@essentialai/cc-bridge-mcp-server"],
       "env": {}
     }
   }
@@ -21,7 +21,7 @@ MCP server for inter-Claude-Code session communication bridge.
 Or use the CLI:
 
 ```bash
-claude mcp add --transport stdio cc-bridge -- npx -y cc-bridge-mcp-server
+claude mcp add --transport stdio cc-bridge -- npx -y @essentialai/cc-bridge-mcp-server
 ```
 
 **Step 2:** Restart Claude Code in both repos. The bridge tools are now available.
@@ -33,7 +33,7 @@ Two Claude Code instances -- one working on a backend repo, another on a fronten
 ```
 CC_Backend                                CC_Frontend
     |                                         |
-    +-- .mcp.json --> cc-bridge-mcp-server    |
+    +-- .mcp.json --> @essentialai/cc-bridge-mcp-server    |
     |                    |                    |
     |                    +-- ~/cloud_code_bridge/cc-bridge-state.json
     |                    |                    |
@@ -133,7 +133,7 @@ To override defaults, set environment variables in your `.mcp.json`:
   "mcpServers": {
     "cc-bridge": {
       "command": "npx",
-      "args": ["-y", "cc-bridge-mcp-server"],
+      "args": ["-y", "@essentialai/cc-bridge-mcp-server"],
       "env": {
         "CC_BRIDGE_STATE_PATH": "/custom/path",
         "CC_BRIDGE_LOG_LEVEL": "debug"
@@ -197,7 +197,7 @@ Find your npx path with `which npx` (e.g., `/Users/you/.nvm/versions/node/v22.11
   "mcpServers": {
     "cc-bridge": {
       "command": "/Users/you/.nvm/versions/node/v22.11.0/bin/npx",
-      "args": ["-y", "cc-bridge-mcp-server"]
+      "args": ["-y", "@essentialai/cc-bridge-mcp-server"]
     }
   }
 }
@@ -206,7 +206,7 @@ Find your npx path with `which npx` (e.g., `/Users/you/.nvm/versions/node/v22.11
 **Option 2: Use `claude mcp add` (handles PATH automatically)**
 
 ```bash
-claude mcp add --transport stdio cc-bridge -- npx -y cc-bridge-mcp-server
+claude mcp add --transport stdio cc-bridge -- npx -y @essentialai/cc-bridge-mcp-server
 ```
 
 **Option 3: Ensure NVM loads in non-interactive shells**

@@ -1,11 +1,12 @@
 {
-  "name": "cc-bridge-mcp-server",
+  "name": "@essentialai/cc-bridge-mcp-server",
   "version": "0.1.0",
   "description": "MCP server for inter-Claude-Code session communication bridge",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "cc-bridge-mcp-server": "dist/cli.js"
+    "cc-bridge-mcp-server": "dist/cli.js",
+    "essentialai-cc-bridge": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -45,6 +46,9 @@
   "author": "Pavlo Sidelov <pavlo@essentialai.com>",
   "license": "ISC",
   "mcpName": "io.github.eaisdevelopment/cc-bridge-mcp-server",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=18"
   },
