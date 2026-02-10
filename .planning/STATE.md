@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 5 of 5 (Documentation and Registry)
-Plan: 1 of 2 in current phase -- COMPLETE
-Status: In Progress
-Last activity: 2026-02-10 -- Completed 05-01 (README rewrite, server.json, mcpName)
+Plan: 2 of 2 in current phase -- COMPLETE (npm publish + MCP Registry deferred to user)
+Status: Complete (pending npm publish and MCP Registry submission)
+Last activity: 2026-02-10 -- Completed 05-02 (OWNER replacement, author, npm tarball prep)
 
-Progress: [███████████] 92%
+Progress: [████████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 3min
-- Total execution time: 0.51 hours
+- Total execution time: 0.54 hours
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [███████████] 92%
 | 02-test-suite | 2 | 5min | 3min |
 | 03-health-stale-peers | 2 | 10min | 5min |
 | 04-package-hygiene | 2 | 2min | 1min |
-| 05-documentation-and-registry | 1 | 3min | 3min |
+| 05-documentation-and-registry | 2 | 5min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (5min), 04-01 (1min), 04-02 (1min), 05-01 (3min)
+- Last 5 plans: 04-01 (1min), 04-02 (1min), 05-01 (3min), 05-02 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -85,17 +85,21 @@ Recent decisions affecting current work:
 - [04-01]: Version 0.1.0 signals pre-1.0 development stage
 - [04-02]: No decisions needed - plan followed exactly as written
 - [05-01]: No decisions needed - plan followed exactly as written
+- [05-02]: GitHub username: eaisdevelopment for all OWNER placeholders
+- [05-02]: Author: Pavlo Sidelov <pavlo@essentialai.com>
+- [05-02]: server.json added to npm files array for MCP Registry discoverability
 
 ### Pending Todos
 
-None yet.
+- npm publish: Run `npm login` then `npm publish --access public` (token expired)
+- MCP Registry: Run `mcp-publisher login` then `mcp-publisher publish server.json`
 
 ### Blockers/Concerns
 
-None yet.
+None -- all code/config work complete. Only manual publishing steps remain.
 
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 05-01-PLAN.md (README rewrite, server.json, mcpName)
+Stopped at: Completed 05-02-PLAN.md (OWNER replacement, npm publish deferred)
 Resume file: None
