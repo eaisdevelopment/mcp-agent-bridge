@@ -9,11 +9,14 @@ export function execClaude(sessionId, message, cwd) {
             ? message.slice(0, config.CC_BRIDGE_CHAR_LIMIT) + "\n...[truncated]"
             : message;
         const args = ["--resume", sessionId, "-p", truncated];
+        // Strip Claude Code env vars so the subprocess doesn't think it's
+        // running inside a parent Claude session (which causes it to hang).
+        const cleanEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("CLAUDE") && key !== "MCP_TRANSPORT"));
         execFile(config.CC_BRIDGE_CLAUDE_PATH, args, {
             cwd,
             timeout: config.CC_BRIDGE_TIMEOUT_MS,
             maxBuffer: 10 * 1024 * 1024,
-            env: { ...process.env },
+            env: cleanEnv,
         }, (error, stdout, stderr) => {
             if (error) {
                 const execError = error;
