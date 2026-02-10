@@ -21,6 +21,7 @@ export function execClaude(
       "--resume", sessionId,
       "--dangerously-skip-permissions",
       "--no-session-persistence",
+      "--strict-mcp-config",
       "-p", truncated,
     ];
 
