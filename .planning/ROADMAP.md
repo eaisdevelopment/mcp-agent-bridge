@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Test Suite** - Unit and integration tests covering all tools, services, and workflows
 - [x] **Phase 3: Health Check and Stale Peer Detection** - New cc_health_check tool and stale peer flagging in list_peers
 - [x] **Phase 4: Package Hygiene** - npm packaging fields, LICENSE, .gitignore, version, and tool annotations for publication
-- [ ] **Phase 5: Documentation and Registry** - README restructure, env var docs, server.json, npm publish, and MCP Registry submission
+- [x] **Phase 5: Documentation and Registry** - README restructure, env var docs, server.json, npm publish, and MCP Registry submission
 
 ## Phase Details
 
@@ -97,8 +97,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- README restructure (npx-first), server.json creation, mcpName in package.json
-- [ ] 05-02-PLAN.md -- OWNER placeholder replacement, npm publish, and MCP Registry submission
+- [x] 05-01-PLAN.md -- README restructure (npx-first), server.json creation, mcpName in package.json
+- [x] 05-02-PLAN.md -- OWNER placeholder replacement, npm publish, and MCP Registry submission
 
 ## Progress
 
@@ -111,4 +111,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Test Suite | 2/2 | ✓ Complete | 2026-02-09 |
 | 3. Health Check and Stale Peer Detection | 2/2 | ✓ Complete | 2026-02-09 |
 | 4. Package Hygiene | 2/2 | ✓ Complete | 2026-02-09 |
-| 5. Documentation and Registry | 0/2 | Not started | - |
+| 5. Documentation and Registry | 2/2 | ✓ Complete | 2026-02-10 |
