@@ -94,11 +94,11 @@ Plans:
   3. README includes a troubleshooting section covering NVM/PATH issues, state file location, and common error messages
   4. `server.json` metadata file exists per MCP Registry specification
   5. Package is published to npm and MCP Registry submission is completed
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md -- README restructure (npx-first), server.json creation, mcpName in package.json
+- [ ] 05-02-PLAN.md -- OWNER placeholder replacement, npm publish, and MCP Registry submission
 
 ## Progress
 
@@ -111,4 +111,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Test Suite | 2/2 | ✓ Complete | 2026-02-09 |
 | 3. Health Check and Stale Peer Detection | 2/2 | ✓ Complete | 2026-02-09 |
 | 4. Package Hygiene | 2/2 | ✓ Complete | 2026-02-09 |
-| 5. Documentation and Registry | 0/TBD | Not started | - |
+| 5. Documentation and Registry | 0/2 | Not started | - |
