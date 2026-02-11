@@ -4,7 +4,18 @@ Claude Code Bridge from Essential AI Solutions (essentialai.uk) — MCP server f
 
 ## Quick Start
 
-**Step 1:** Add `.mcp.json` to **both** project repositories:
+### Install via Plugin Marketplace (Recommended)
+
+```bash
+claude plugin marketplace add eaisdevelopment/cc-bridge-marketplace
+claude plugin install cc-bridge@cc-bridge-marketplace
+```
+
+Restart Claude Code. Use `/cc-bridge:register` to join the bridge — session discovery, registration, and message protocol are all handled automatically.
+
+### Alternative: Manual Setup
+
+Add `.mcp.json` to **both** project repositories:
 
 ```json
 {
@@ -24,7 +35,9 @@ Or use the CLI:
 claude mcp add --transport stdio cc-bridge -- npx -y @essentialai/cc-bridge-mcp-server
 ```
 
-**Step 2:** Restart Claude Code in both repos. The bridge tools are now available.
+Restart Claude Code in both repos. The bridge tools are now available.
+
+> See [docs/installation.md](docs/installation.md) for all installation options, configuration, and troubleshooting.
 
 ## What It Does
 

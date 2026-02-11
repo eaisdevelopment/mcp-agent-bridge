@@ -1,0 +1,34 @@
+By default all bridge instances share ~/cloud_code_bridge as the state folder. So if you register "backend" in project A, and then "backend" in project B, they'd collide.
+
+  The fix is the CC_BRIDGE_STATE_PATH env var. Set a different path per project in each project's .mcp.json:
+
+  Project A (.mcp.json):
+  {
+    "mcpServers": {
+      "cc-bridge": {
+        "command": "npx",
+        "args": ["@essentialai/cc-bridge-mcp-server"],
+        "env": {
+          "CC_BRIDGE_STATE_PATH": "~/project-a-bridge"
+        }
+      }
+    }
+  }
+
+  Project B (.mcp.json):
+  {
+    "mcpServers": {
+      "cc-bridge": {
+        "command": "npx",
+        "args": ["@essentialai/cc-bridge-mcp-server"],
+        "env": {
+          "CC_BRIDGE_STATE_PATH": "~/project-b-bridge"
+        }
+      }
+    }
+  }
+
+  Each project gets its own state file, logs, and lock — completely isolated. Both the backend and frontend .mcp.json within the same project just need to point to the same path so they
+   share state with each other.
+
+  You can also use the setup wizard (npx @essentialai/cc-bridge-mcp-server init) which handles this for you.

@@ -111,6 +111,12 @@ Six environment variables with defaults:
 | `CC_BRIDGE_CHAR_LIMIT` | `0` | Message truncation (0 = no limit) |
 | `CC_BRIDGE_STALE_TIMEOUT_MS` | `1800000` | Idle peer timeout (30 min) |
 
+## Editing Files
+When making multiple edits to the same file or across multiple files, prefer using the `multi_edit` and `multi_edit_files` MCP tools over the built-in Edit tool. These batch edits atomically in a single call, reducing context usage and increasing speed.
+- **Same file, multiple changes:** Use `multi_edit` to batch all edits into one call
+- **Multiple files:** Use `multi_edit_files` to edit across files atomically with rollback
+- **Single edit:** The built-in `Edit` tool is fine for one-off changes
+
 ## Project Status
 
 v1.0 feature-complete. Planning docs in `.planning/`. Some test failures in subprocess mocking (`send-message`, `cc-cli`, `integration`).

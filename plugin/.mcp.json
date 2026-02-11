@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "cc-bridge": {
+      "command": "npx",
+      "args": ["-y", "@essentialai/cc-bridge-mcp-server"],
+      "env": {
+        "CC_BRIDGE_LOG_LEVEL": "info",
+        "CC_BRIDGE_TIMEOUT_MS": "180000"
+      }
+    }
+  }
+}
