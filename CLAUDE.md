@@ -4,7 +4,7 @@
 
 **cc-bridge-mcp-server** — An MCP server that enables inter-session communication between two separate Claude Code instances. Two CC sessions can exchange messages while staying fully isolated in their own repositories.
 
-Published as `@essentialai/cc-bridge-mcp-server` on npm (v0.2.3).
+Published as `@essentialai/cc-bridge-mcp-server` on npm (v0.2.7).
 
 ## Quick Reference
 
