@@ -39,6 +39,20 @@ Or just tell Claude: "Register on the bridge as backend"
 /cc-bridge:send frontend Hey, can you check if the API is working?
 ```
 
+### Set Up Shared Folder for Multiple Projects
+
+```
+/cc-bridge:init /path/to/backend /path/to/frontend
+```
+
+Or with a custom shared state path:
+
+```
+/cc-bridge:init /path/to/backend /path/to/frontend --share /path/to/cc-share
+```
+
+Creates `.mcp.json` in each project pointing to the same shared state directory.
+
 ### Run the Demo
 
 ```

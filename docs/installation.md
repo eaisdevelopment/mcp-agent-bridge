@@ -22,6 +22,7 @@ That's it. Restart Claude Code and the bridge tools are available. Use `/cc-brid
 - `/cc-bridge:register` — register this session on the bridge
 - `/cc-bridge:status` — check peers, health, and message history
 - `/cc-bridge:send` — send a message to another peer
+- `/cc-bridge:init` — set up shared folder for multiple projects
 - `/cc-bridge:demo` — set up a demo with sample projects
 - Automatic session ID discovery (no manual lookup)
 
