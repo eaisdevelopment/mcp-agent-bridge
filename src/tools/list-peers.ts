@@ -26,11 +26,21 @@ export function registerListPeersTool(server: McpServer): void {
         const peers = await listPeers();
         const staleTimeout = getConfig().CC_BRIDGE_STALE_TIMEOUT_MS;
         const now = Date.now();
-        const enriched = peers.map(peer => ({
-          ...peer,
-          potentiallyStale: staleTimeout > 0 && (now - new Date(peer.lastSeenAt).getTime()) > staleTimeout,
-        }));
-        return successResult({ peers: enriched, count: enriched.length });
+        const enriched = peers.map(peer => {
+          const idleMs = now - new Date(peer.lastSeenAt).getTime();
+          const isIdle = staleTimeout > 0 && idleMs > staleTimeout;
+          return {
+            ...peer,
+            idleMs,
+            status: isIdle ? "idle" : "active",
+            potentiallyStale: isIdle,
+          };
+        });
+        return successResult({
+          peers: enriched,
+          count: enriched.length,
+          note: "Idle peers may still be reachable. Use cc_send_message — it auto-recovers if the session has changed.",
+        });
       } catch (err) {
         logger.error("list-peers failed", { error: err });
         return errorResult(err);

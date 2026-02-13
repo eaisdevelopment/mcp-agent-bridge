@@ -24,6 +24,7 @@ export interface SendMessageResult {
   response: string | null;
   error: string | null;
   durationMs: number;
+  recoveredSessionId?: string;
 }
 
 export interface CliExecResult {

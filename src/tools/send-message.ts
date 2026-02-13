@@ -1,10 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getPeer, recordMessage, updateLastSeen } from "../services/peer-registry.js";
-import { execClaude, validateSession } from "../services/cc-cli.js";
+import { getPeer, recordMessage, updateLastSeen, updatePeerSession } from "../services/peer-registry.js";
+import { execClaude, validateSession, discoverLatestSession } from "../services/cc-cli.js";
 import { BridgeError, BridgeErrorCode, successResult, errorResult } from "../errors.js";
 import { getConfig } from "../config.js";
 import { logger } from "../logger.js";
+import { CliExecResult } from "../types.js";
 
 const RETRY_TIMEOUT_MS = 30_000;
 
@@ -18,6 +19,34 @@ function formatBridgeMessage(fromLabel: string, fromPeerId: string, message: str
   );
 }
 
+/**
+ * Attempt to deliver a message to a session. Validates the session file exists,
+ * then calls execClaude. On timeout, retries once with a shorter timeout.
+ */
+async function tryDeliverMessage(
+  sessionId: string,
+  formattedMessage: string,
+  cwd: string,
+): Promise<{ result: CliExecResult; sessionValid: boolean }> {
+  const sessionValid = await validateSession(sessionId, cwd);
+  if (!sessionValid) {
+    return {
+      result: { stdout: "", stderr: `Session file not found for ${sessionId}`, exitCode: 1 },
+      sessionValid: false,
+    };
+  }
+
+  let result = await execClaude(sessionId, formattedMessage, cwd);
+
+  // On timeout, retry once with a shorter timeout
+  if (result.exitCode === null) {
+    logger.info(`Message timed out, retrying with ${RETRY_TIMEOUT_MS}ms timeout`);
+    result = await execClaude(sessionId, formattedMessage, cwd, RETRY_TIMEOUT_MS);
+  }
+
+  return { result, sessionValid: true };
+}
+
 export function registerSendMessageTool(server: McpServer): void {
   server.registerTool(
     "cc_send_message",
@@ -26,7 +55,8 @@ export function registerSendMessageTool(server: McpServer): void {
       description:
         "Send a message from one registered peer to another. " +
         "The message is relayed by resuming the target's Claude Code session " +
-        "via CLI subprocess. Returns the target's response.",
+        "via CLI subprocess. Returns the target's response. " +
+        "Auto-recovers if the target's session has changed.",
       inputSchema: {
         fromPeerId: z
           .string()
@@ -69,32 +99,67 @@ export function registerSendMessageTool(server: McpServer): void {
           );
         }
 
-        // Fast-fail: check if the target session file exists on disk
-        const sessionValid = await validateSession(to.sessionId, to.cwd);
-        if (!sessionValid) {
-          return errorResult(
-            new BridgeError(
-              BridgeErrorCode.CLI_EXEC_FAILED,
-              `Session '${to.sessionId}' not found for peer '${toPeerId}'. The session may have ended or the ID is wrong`,
-              `Ask '${toPeerId}' to re-register with their current session ID`,
-            ),
-          );
-        }
-
         const prefixed = formatBridgeMessage(from.label, fromPeerId, message);
         const startMs = Date.now();
 
         try {
-          let result = await execClaude(to.sessionId, prefixed, to.cwd);
+          // --- First attempt with registered session ID ---
+          let { result, sessionValid } = await tryDeliverMessage(
+            to.sessionId, prefixed, to.cwd,
+          );
+          let recoveredSessionId: string | null = null;
 
-          // On timeout, retry once with a shorter timeout
-          if (result.exitCode === null) {
+          // --- Auto-recovery: if session invalid or exec failed, try latest session ---
+          const shouldRecover = !sessionValid || (result.exitCode !== 0 && result.exitCode !== null);
+
+          if (shouldRecover) {
             logger.info(
-              `Message to '${toPeerId}' timed out, retrying with ${RETRY_TIMEOUT_MS}ms timeout`,
+              `Delivery to '${toPeerId}' failed (session: ${to.sessionId}), attempting auto-recovery`,
             );
-            result = await execClaude(to.sessionId, prefixed, to.cwd, RETRY_TIMEOUT_MS);
+
+            const latestSessionId = await discoverLatestSession(to.cwd);
+
+            if (latestSessionId && latestSessionId !== to.sessionId) {
+              logger.info(
+                `Discovered newer session '${latestSessionId}' for peer '${toPeerId}', retrying`,
+              );
+
+              const retryAttempt = await tryDeliverMessage(
+                latestSessionId, prefixed, to.cwd,
+              );
+
+              if (retryAttempt.sessionValid) {
+                // Update the registry with the new session ID
+                await updatePeerSession(toPeerId, latestSessionId);
+                recoveredSessionId = latestSessionId;
+                result = retryAttempt.result;
+              }
+            }
+
+            // If no newer session found, or same session, or retry also invalid
+            if (!recoveredSessionId && !sessionValid) {
+              const durationMs = Date.now() - startMs;
+              await recordMessage({
+                fromPeerId,
+                toPeerId,
+                message,
+                response: null,
+                durationMs,
+                success: false,
+                error: `Session '${to.sessionId}' is unreachable and no newer session was found`,
+              });
+
+              return errorResult(
+                new BridgeError(
+                  BridgeErrorCode.SESSION_STALE,
+                  `Session '${to.sessionId}' for peer '${toPeerId}' is unreachable. Auto-recovery found no newer session in ${to.cwd}`,
+                  `Ask '${toPeerId}' to re-register with their current session ID using cc_register_peer`,
+                ),
+              );
+            }
           }
 
+          // --- Process result ---
           const durationMs = Date.now() - startMs;
           const success = result.exitCode === 0;
 
@@ -125,6 +190,7 @@ export function registerSendMessageTool(server: McpServer): void {
             response: success ? result.stdout : null,
             error: success ? null : result.stderr,
             durationMs,
+            ...(recoveredSessionId ? { recoveredSessionId } : {}),
           });
         } catch (err) {
           const durationMs = Date.now() - startMs;

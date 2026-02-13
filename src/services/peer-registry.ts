@@ -195,6 +195,22 @@ export async function updateLastSeen(peerId: string): Promise<void> {
   });
 }
 
+export async function updatePeerSession(
+  peerId: string,
+  sessionId: string,
+): Promise<PeerInfo | null> {
+  return withLock(async () => {
+    const state = await readState();
+    const peer = state.peers[peerId];
+    if (!peer) return null;
+
+    peer.sessionId = sessionId;
+    peer.lastSeenAt = new Date().toISOString();
+    await writeState(state);
+    return { ...peer };
+  });
+}
+
 export async function deregisterPeer(peerId: string): Promise<boolean> {
   return withLock(async () => {
     const state = await readState();

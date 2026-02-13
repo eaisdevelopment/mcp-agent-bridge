@@ -3,11 +3,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 vi.mock("../services/cc-cli.js", () => ({
   execClaude: vi.fn(),
   validateSession: vi.fn(),
+  discoverLatestSession: vi.fn(),
 }));
 
-import { execClaude, validateSession } from "../services/cc-cli.js";
+import { execClaude, validateSession, discoverLatestSession } from "../services/cc-cli.js";
 const mockExecClaude = vi.mocked(execClaude);
 const mockValidateSession = vi.mocked(validateSession);
+const mockDiscoverLatestSession = vi.mocked(discoverLatestSession);
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -25,6 +27,7 @@ let cleanup: () => Promise<void>;
 beforeEach(async () => {
   vi.clearAllMocks();
   mockValidateSession.mockResolvedValue(true);
+  mockDiscoverLatestSession.mockResolvedValue(null);
   const ctx = await createTestConfig();
   cleanup = ctx.cleanup;
   server = new McpServer({ name: "test", version: "1.0.0" });
@@ -122,11 +125,12 @@ describe("cc_send_message tool", () => {
     expect(data.error).toBe("PEER_NOT_FOUND");
   });
 
-  it("returns error when session file not found", async () => {
+  it("returns SESSION_STALE when session file not found and no recovery possible", async () => {
     await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
     await registerPeer("frontend", "sess-2", "/tmp/frontend", "CC_Frontend");
 
     mockValidateSession.mockResolvedValue(false);
+    mockDiscoverLatestSession.mockResolvedValue(null);
 
     const result = await client.callTool({
       name: "cc_send_message",
@@ -142,8 +146,7 @@ describe("cc_send_message tool", () => {
       (result.content as Array<{ type: string; text: string }>)[0].text,
     );
     expect(data.success).toBe(false);
-    expect(data.error).toBe("CLI_EXEC_FAILED");
-    expect(data.message).toContain("not found");
+    expect(data.error).toBe("SESSION_STALE");
   });
 
   it("handles CLI timeout with retry", async () => {
@@ -267,6 +270,102 @@ describe("cc_send_message tool", () => {
     expect(new Date(targetAfter!.lastSeenAt).getTime()).toBeGreaterThan(
       new Date(targetBefore!.lastSeenAt).getTime(),
     );
+  });
+
+  it("auto-recovers when session file missing but newer session exists", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "old-sess", "/tmp/frontend", "CC_Frontend");
+
+    // First validateSession returns false (old session gone), second returns true (new session found)
+    mockValidateSession
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
+
+    mockDiscoverLatestSession.mockResolvedValue("new-sess");
+
+    mockExecClaude.mockResolvedValue({
+      stdout: "Recovered response!",
+      stderr: "",
+      exitCode: 0,
+    });
+
+    const result = await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
+      },
+    });
+
+    const data = JSON.parse(
+      (result.content as Array<{ type: string; text: string }>)[0].text,
+    );
+    expect(data.success).toBe(true);
+    expect(data.response).toBe("Recovered response!");
+    expect(data.recoveredSessionId).toBe("new-sess");
+
+    // Verify the peer registry was updated
+    const peer = await getPeerDirect("frontend");
+    expect(peer!.sessionId).toBe("new-sess");
+  });
+
+  it("returns SESSION_STALE when discovered session is same as current", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "dead-sess", "/tmp/frontend", "CC_Frontend");
+
+    mockValidateSession.mockResolvedValue(false);
+    mockDiscoverLatestSession.mockResolvedValue("dead-sess"); // Same session
+
+    const result = await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
+      },
+    });
+
+    expect(result.isError).toBe(true);
+    const data = JSON.parse(
+      (result.content as Array<{ type: string; text: string }>)[0].text,
+    );
+    expect(data.error).toBe("SESSION_STALE");
+  });
+
+  it("auto-recovers from exec failure with newer session", async () => {
+    await registerPeer("backend", "sess-1", "/tmp/backend", "CC_Backend");
+    await registerPeer("frontend", "old-sess", "/tmp/frontend", "CC_Frontend");
+
+    mockValidateSession.mockResolvedValue(true);
+    mockDiscoverLatestSession.mockResolvedValue("new-sess");
+
+    mockExecClaude
+      .mockResolvedValueOnce({
+        stdout: "",
+        stderr: "CLI_EXEC_FAILED: claude exited with code 1",
+        exitCode: 1,
+      })
+      .mockResolvedValueOnce({
+        stdout: "Recovered!",
+        stderr: "",
+        exitCode: 0,
+      });
+
+    const result = await client.callTool({
+      name: "cc_send_message",
+      arguments: {
+        fromPeerId: "backend",
+        toPeerId: "frontend",
+        message: "Hello",
+      },
+    });
+
+    const data = JSON.parse(
+      (result.content as Array<{ type: string; text: string }>)[0].text,
+    );
+    expect(data.success).toBe(true);
+    expect(data.recoveredSessionId).toBe("new-sess");
   });
 
   it("does not update target lastSeenAt on failed send", async () => {

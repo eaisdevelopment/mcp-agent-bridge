@@ -31,6 +31,43 @@ export async function validateSession(
   }
 }
 
+/**
+ * Discover the most recently modified Claude Code session for a project directory.
+ * Returns the session UUID (filename without .jsonl extension) or null if none found.
+ */
+export async function discoverLatestSession(cwd: string): Promise<string | null> {
+  const projectHash = cwd.replace(/[^a-zA-Z0-9-]/g, "-");
+  const projectDir = path.join(os.homedir(), ".claude", "projects", projectHash);
+
+  let entries: import("node:fs").Dirent[];
+  try {
+    entries = await fs.readdir(projectDir, { withFileTypes: true });
+  } catch {
+    return null;
+  }
+
+  const jsonlFiles = entries.filter(
+    (e) => e.isFile() && e.name.endsWith(".jsonl"),
+  );
+
+  if (jsonlFiles.length === 0) return null;
+
+  let latest: { name: string; mtimeMs: number } | null = null;
+  for (const entry of jsonlFiles) {
+    try {
+      const stat = await fs.stat(path.join(projectDir, entry.name));
+      if (!latest || stat.mtimeMs > latest.mtimeMs) {
+        latest = { name: entry.name, mtimeMs: stat.mtimeMs };
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  if (!latest) return null;
+  return latest.name.replace(/\.jsonl$/, "");
+}
+
 export function execClaude(
   sessionId: string,
   message: string,

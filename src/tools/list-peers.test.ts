@@ -107,6 +107,10 @@ describe("cc_list_peers tool", () => {
     expect(peer).toHaveProperty("registeredAt");
     expect(peer).toHaveProperty("lastSeenAt");
     expect(peer).toHaveProperty("potentiallyStale");
+    expect(peer).toHaveProperty("idleMs");
+    expect(peer).toHaveProperty("status");
+    expect(peer.status).toBe("active");
+    expect(typeof peer.idleMs).toBe("number");
     // Validate registeredAt is a valid ISO timestamp
     const parsed = new Date(peer.registeredAt);
     expect(parsed.toISOString()).toBe(peer.registeredAt);
@@ -132,6 +136,8 @@ describe("cc_list_peers tool", () => {
       (result.content as Array<{ type: string; text: string }>)[0].text,
     );
     expect(data.peers[0].potentiallyStale).toBe(false);
+    expect(data.peers[0].status).toBe("active");
+    expect(data.note).toContain("auto-recover");
   });
 
   it("flags stale peers when timeout is very short", async () => {
@@ -178,6 +184,8 @@ describe("cc_list_peers tool", () => {
       (result.content as Array<{ type: string; text: string }>)[0].text,
     );
     expect(data.peers[0].potentiallyStale).toBe(true);
+    expect(data.peers[0].status).toBe("idle");
+    expect(data.peers[0].idleMs).toBeGreaterThan(0);
   });
 
   it("stale detection disabled when timeout is 0", async () => {

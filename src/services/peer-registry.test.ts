@@ -10,6 +10,7 @@ import {
   recordMessage,
   getHistory,
   updateLastSeen,
+  updatePeerSession,
 } from "./peer-registry.js";
 
 let cleanup: () => Promise<void>;
@@ -251,6 +252,36 @@ describe("lastSeenAt tracking", () => {
     const peers = await listPeers();
     expect(peers).toHaveLength(1);
     expect(peers[0].lastSeenAt).toBe("2025-01-01T00:00:00.000Z");
+  });
+});
+
+describe("updatePeerSession", () => {
+  it("updates sessionId and lastSeenAt while preserving other fields", async () => {
+    const original = await registerPeer("be", "old-sess", "/tmp/project", "backend");
+    await new Promise((r) => setTimeout(r, 10));
+
+    const updated = await updatePeerSession("be", "new-sess");
+    expect(updated).not.toBeNull();
+    expect(updated!.sessionId).toBe("new-sess");
+    expect(updated!.peerId).toBe("be");
+    expect(updated!.cwd).toBe("/tmp/project");
+    expect(updated!.label).toBe("backend");
+    expect(updated!.registeredAt).toBe(original.registeredAt);
+    expect(new Date(updated!.lastSeenAt).getTime()).toBeGreaterThan(
+      new Date(original.lastSeenAt).getTime(),
+    );
+  });
+
+  it("returns null for nonexistent peer", async () => {
+    const result = await updatePeerSession("nonexistent", "some-sess");
+    expect(result).toBeNull();
+  });
+
+  it("persists the new session ID", async () => {
+    await registerPeer("be", "old-sess", "/tmp/project", "backend");
+    await updatePeerSession("be", "new-sess");
+    const peer = await getPeer("be");
+    expect(peer!.sessionId).toBe("new-sess");
   });
 });
 

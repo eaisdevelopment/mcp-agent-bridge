@@ -10,6 +10,7 @@ export enum BridgeErrorCode {
   INVALID_INPUT = "INVALID_INPUT",
   STARTUP_FAILED = "STARTUP_FAILED",
   DIR_NOT_WRITABLE = "DIR_NOT_WRITABLE",
+  SESSION_STALE = "SESSION_STALE",
 }
 
 export class BridgeError extends Error {
