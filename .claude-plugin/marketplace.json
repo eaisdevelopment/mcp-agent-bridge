@@ -1,0 +1,19 @@
+{
+  "name": "mcp-agent-bridge",
+  "owner": {
+    "name": "Essential AI Solutions",
+    "email": "pavlo@essentialai.uk"
+  },
+  "metadata": {
+    "description": "Cogent Bridge — Real-time relay for Claude Code inter-session communication",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "cogent-bridge",
+      "source": "./plugin",
+      "description": "Inter-session communication bridge for Claude Code. Enables two or more Claude Code sessions to exchange messages in real time via cloud relay or local file state.",
+      "version": "1.0.0"
+    }
+  ]
+}
