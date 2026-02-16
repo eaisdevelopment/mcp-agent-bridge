@@ -2,14 +2,14 @@
 name: bridge-setup
 description: >
   Automatically set up this Claude Code session as a bridge peer.
-  Discovers the current session ID, registers on the CC Bridge, and
+  Discovers the current session ID, registers on the Cogent Bridge, and
   confirms readiness for inter-session communication. Use when the user
   asks to "register on the bridge", "set up the bridge", or "join the bridge".
 ---
 
-# CC Bridge Setup
+# Cogent Bridge Setup
 
-You are setting up this Claude Code session as a peer on the CC Bridge for
+You are setting up this Claude Code session as a peer on the Cogent Bridge for
 inter-session communication.
 
 ## Step 1: Discover Session ID
@@ -34,14 +34,14 @@ they may need to check their Claude Code installation.
 If the user provided a peer ID and/or label, use those. Otherwise:
 - **Default peer ID**: the current directory name, lowercased, with non-alphanumeric
   characters replaced by hyphens (e.g., `klaire_backend` becomes `klaire-backend`)
-- **Default label**: `CC_` followed by the directory name with non-alphanumeric
-  characters replaced by underscores (e.g., `CC_klaire_backend`)
+- **Default label**: `Cogent_` followed by the directory name with non-alphanumeric
+  characters replaced by underscores (e.g., `Cogent_klaire_backend`)
 
 Ask the user to confirm or customize these defaults before registering.
 
 ## Step 3: Register on the Bridge
 
-Call `cc_register_peer` with:
+Call `cogent_register_peer` with:
 - `peerId`: the chosen peer ID
 - `sessionId`: the UUID discovered in Step 1
 - `cwd`: the absolute working directory path (output of `pwd`)
@@ -51,15 +51,15 @@ Call `cc_register_peer` with:
 
 After successful registration, inform the user:
 - Their peer ID and label
-- They can send messages to other peers using `cc_send_message`
-- They can check who else is on the bridge using `cc_list_peers`
-- Incoming messages arrive with a `[CC Bridge message from ...]` header
-- They should respond to incoming messages directly (NOT via cc_send_message)
+- They can send messages to other peers using `cogent_send_message`
+- They can check who else is on the bridge using `cogent_list_peers`
+- Incoming messages arrive with a `[Cogent Bridge message from ...]` header
+- They should respond to incoming messages directly (NOT via cogent_send_message)
 
 ## Message Handling Protocol
 
-When you receive a message with a `[CC Bridge message from ...]` header:
+When you receive a message with a `[Cogent Bridge message from ...]` header:
 - Your entire response is automatically relayed back to the sender
-- Do NOT use `cc_send_message` to reply -- just answer directly and normally
+- Do NOT use `cogent_send_message` to reply -- just answer directly and normally
 - Read carefully, investigate the issue, and respond with specifics
 - Include file names and line numbers when discussing code changes

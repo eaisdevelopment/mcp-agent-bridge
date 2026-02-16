@@ -1,11 +1,11 @@
 {
   "mcpServers": {
-    "cc-bridge": {
+    "cogent-bridge": {
       "command": "npx",
-      "args": ["-y", "@essentialai/cc-bridge-mcp-server"],
+      "args": ["-y", "@essentialai/cogent-bridge"],
       "env": {
-        "CC_BRIDGE_LOG_LEVEL": "info",
-        "CC_BRIDGE_TIMEOUT_MS": "180000"
+        "COGENT_LOG_LEVEL": "info",
+        "COGENT_TIMEOUT_MS": "180000"
       }
     }
   }

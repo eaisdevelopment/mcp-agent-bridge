@@ -1,4 +1,4 @@
-# CC Bridge - Claude Code Plugin
+# Cogent Bridge - Claude Code Plugin
 
 Inter-session communication bridge for Claude Code. Enables two or more Claude Code sessions to exchange messages in real time.
 
@@ -7,14 +7,14 @@ Inter-session communication bridge for Claude Code. Enables two or more Claude C
 ### Via Marketplace (Recommended)
 
 ```bash
-claude plugin marketplace add eaisdevelopment/cc-bridge-marketplace
-claude plugin install cc-bridge@cc-bridge-marketplace
+claude plugin marketplace add eaisdevelopment/cogent-marketplace
+claude plugin install cogent-bridge@cogent-marketplace
 ```
 
 ### Local Testing
 
 ```bash
-claude --plugin-dir /path/to/cc-bridge-plugin
+claude --plugin-dir /path/to/cogent-bridge-plugin
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ claude --plugin-dir /path/to/cc-bridge-plugin
 ### Register on the Bridge
 
 ```
-/cc-bridge:register backend
+/cogent-bridge:register backend
 ```
 
 Or just tell Claude: "Register on the bridge as backend"
@@ -30,25 +30,25 @@ Or just tell Claude: "Register on the bridge as backend"
 ### Check Bridge Status
 
 ```
-/cc-bridge:status
+/cogent-bridge:status
 ```
 
 ### Send a Message
 
 ```
-/cc-bridge:send frontend Hey, can you check if the API is working?
+/cogent-bridge:send frontend Hey, can you check if the API is working?
 ```
 
 ### Set Up Shared Folder for Multiple Projects
 
 ```
-/cc-bridge:init /path/to/backend /path/to/frontend
+/cogent-bridge:init /path/to/backend /path/to/frontend
 ```
 
 Or with a custom shared state path:
 
 ```
-/cc-bridge:init /path/to/backend /path/to/frontend --share /path/to/cc-share
+/cogent-bridge:init /path/to/backend /path/to/frontend --share /path/to/cc-share
 ```
 
 Creates `.mcp.json` in each project pointing to the same shared state directory.
@@ -56,7 +56,7 @@ Creates `.mcp.json` in each project pointing to the same shared state directory.
 ### Run the Demo
 
 ```
-/cc-bridge:demo
+/cogent-bridge:demo
 ```
 
 ## Configuration
@@ -66,13 +66,13 @@ The plugin uses sensible defaults. To customize, create a `.mcp.json` in your pr
 ```json
 {
   "mcpServers": {
-    "cc-bridge": {
+    "cogent-bridge": {
       "command": "npx",
-      "args": ["-y", "@essentialai/cc-bridge-mcp-server"],
+      "args": ["-y", "@essentialai/cogent-bridge"],
       "env": {
-        "CC_BRIDGE_STATE_PATH": "/custom/shared/path",
-        "CC_BRIDGE_LOG_LEVEL": "info",
-        "CC_BRIDGE_TIMEOUT_MS": "180000"
+        "COGENT_STATE_PATH": "/custom/shared/path",
+        "COGENT_LOG_LEVEL": "info",
+        "COGENT_TIMEOUT_MS": "180000"
       }
     }
   }
@@ -83,15 +83,15 @@ The plugin uses sensible defaults. To customize, create a `.mcp.json` in your pr
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `CC_BRIDGE_STATE_PATH` | `~/cloud_code_bridge` | Shared state directory |
-| `CC_BRIDGE_LOG_LEVEL` | `info` | Log verbosity (debug/info/warn/error) |
-| `CC_BRIDGE_TIMEOUT_MS` | `180000` | CLI subprocess timeout |
-| `CC_BRIDGE_CHAR_LIMIT` | `0` | Message truncation (0 = no limit) |
-| `CC_BRIDGE_STALE_TIMEOUT_MS` | `1800000` | Idle peer timeout (30 min) |
+| `COGENT_STATE_PATH` | `~/.cogent` | Shared state directory |
+| `COGENT_LOG_LEVEL` | `info` | Log verbosity (debug/info/warn/error) |
+| `COGENT_TIMEOUT_MS` | `180000` | CLI subprocess timeout |
+| `COGENT_CHAR_LIMIT` | `0` | Message truncation (0 = no limit) |
+| `COGENT_STALE_TIMEOUT_MS` | `1800000` | Idle peer timeout (30 min) |
 
 ### Project Isolation
 
-To keep multiple projects isolated, set a unique `CC_BRIDGE_STATE_PATH` per project in your project-level `.mcp.json`.
+To keep multiple projects isolated, set a unique `COGENT_STATE_PATH` per project in your project-level `.mcp.json`.
 
 ## How It Works
 
@@ -102,6 +102,6 @@ To keep multiple projects isolated, set a unique `CC_BRIDGE_STATE_PATH` per proj
 
 ## Links
 
-- [npm package](https://www.npmjs.com/package/@essentialai/cc-bridge-mcp-server)
+- [npm package](https://www.npmjs.com/package/@essentialai/cogent-bridge)
 - [GitHub repo](https://github.com/eaisdevelopment/mcp-agent-bridge)
 - [MCP Registry](https://registry.modelcontextprotocol.io)

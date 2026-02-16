@@ -1,17 +1,27 @@
-# @essentialai/cc-bridge-mcp-server
+# @essentialai/cogent-bridge
 
-Claude Code Bridge from Essential AI Solutions (essentialai.uk) — MCP server for inter-Claude-Code session communication.
+**Cogent** — Real-time relay for Claude Code inter-session communication. Connect your Claude Code agents to collaborate across codebases.
+
+Built by [Essential AI Solutions](https://essentialai.uk) | [cogent.tools](https://cogent.tools) | [How-To Guide](https://cogent.tools/how-to)
 
 ## Quick Start
 
-### Install via Plugin Marketplace (Recommended)
+### Install (Recommended)
 
 ```bash
-claude plugin marketplace add eaisdevelopment/cc-bridge-marketplace
-claude plugin install cc-bridge@cc-bridge-marketplace
+npm install -g @essentialai/cogent-bridge && claude mcp add cogent-bridge -e COGENT_ENDPOINT=https://cogent.tools -s user -- cogent-bridge
 ```
 
-Restart Claude Code. Use `/cc-bridge:register` to join the bridge — session discovery, registration, and message protocol are all handled automatically.
+Restart Claude Code. The bridge tools are available in every session.
+
+### Alternative: Plugin Marketplace
+
+```bash
+claude plugin marketplace add eaisdevelopment/mcp-agent-bridge
+claude plugin install cc-bridge@mcp-agent-bridge
+```
+
+Restart Claude Code. Use `/cc-bridge:register` to join the bridge.
 
 ### Alternative: Manual Setup
 
@@ -305,6 +315,14 @@ src/
 | `npm test` | `vitest run` | Run test suite |
 | `npm run test:watch` | `vitest` | Run tests in watch mode |
 | `npm run test:coverage` | `vitest run --coverage` | Run tests with coverage report |
+
+## Links
+
+- [cogent.tools](https://cogent.tools) — Cloud relay server with live stats
+- [How-To Guide](https://cogent.tools/how-to) — Real-world use cases for teams
+- [npm: @essentialai/cogent-bridge](https://www.npmjs.com/package/@essentialai/cogent-bridge)
+- [GitHub: Source](https://github.com/eaisdevelopment/cc-bridge-mcp-server)
+- [Essential AI Solutions](https://essentialai.uk)
 
 ## License
 
