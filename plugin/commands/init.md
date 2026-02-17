@@ -12,14 +12,14 @@ Ask the user for:
 2. **Shared state path** — where to store `cogent-state.json`. Suggest a path alongside their projects, e.g., if projects are at `/code/myapp/backend` and `/code/myapp/frontend`, suggest `/code/myapp/cogent-share`. Default: `~/.cogent` (global, shared across all projects).
 
 If arguments were provided ($ARGUMENTS), try to parse them. Supported formats:
-- `/cogent-bridge:init /path/to/backend /path/to/frontend` — two project paths, default shared folder
-- `/cogent-bridge:init /path/to/backend /path/to/frontend --share /path/to/share` — explicit shared folder
+- `/cogent:init /path/to/backend /path/to/frontend` — two project paths, default shared folder
+- `/cogent:init /path/to/backend /path/to/frontend --share /path/to/share` — explicit shared folder
 
 ## Step 2: Create `.mcp.json` in Each Project
 
 For **each** project directory, check if `.mcp.json` already exists:
 
-- **If it exists**: Read it, add or update the `cogent-bridge` entry under `mcpServers`, preserving other servers. Write it back.
+- **If it exists**: Read it, add or update the `cogent` entry under `mcpServers`, preserving other servers. Write it back.
 - **If it doesn't exist**: Create a new `.mcp.json`.
 
 The `.mcp.json` content for each project:
@@ -27,7 +27,7 @@ The `.mcp.json` content for each project:
 ```json
 {
   "mcpServers": {
-    "cogent-bridge": {
+    "cogent": {
       "command": "npx",
       "args": ["-y", "@essentialai/cogent-bridge"],
       "env": {
@@ -56,4 +56,4 @@ Show the user:
 - Which `.mcp.json` files were created or updated
 - The shared state path being used
 - Remind them to **restart Claude Code** in each project for the changes to take effect
-- After restarting, they can use `/cogent-bridge:register` in each session to join the bridge
+- After restarting, they can use `/cogent:register` in each session to join the bridge

@@ -8,13 +8,13 @@ Inter-session communication bridge for Claude Code. Enables two or more Claude C
 
 ```bash
 claude plugin marketplace add eaisdevelopment/cogent-marketplace
-claude plugin install cogent-bridge@cogent-marketplace
+claude plugin install cogent@cogent-marketplace
 ```
 
 ### Local Testing
 
 ```bash
-claude --plugin-dir /path/to/cogent-bridge-plugin
+claude --plugin-dir /path/to/cogent-plugin
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ claude --plugin-dir /path/to/cogent-bridge-plugin
 ### Register on the Bridge
 
 ```
-/cogent-bridge:register backend
+/cogent:register backend
 ```
 
 Or just tell Claude: "Register on the bridge as backend"
@@ -30,25 +30,25 @@ Or just tell Claude: "Register on the bridge as backend"
 ### Check Bridge Status
 
 ```
-/cogent-bridge:status
+/cogent:status
 ```
 
 ### Send a Message
 
 ```
-/cogent-bridge:send frontend Hey, can you check if the API is working?
+/cogent:send frontend Hey, can you check if the API is working?
 ```
 
 ### Set Up Shared Folder for Multiple Projects
 
 ```
-/cogent-bridge:init /path/to/backend /path/to/frontend
+/cogent:init /path/to/backend /path/to/frontend
 ```
 
 Or with a custom shared state path:
 
 ```
-/cogent-bridge:init /path/to/backend /path/to/frontend --share /path/to/cc-share
+/cogent:init /path/to/backend /path/to/frontend --share /path/to/cc-share
 ```
 
 Creates `.mcp.json` in each project pointing to the same shared state directory.
@@ -56,7 +56,7 @@ Creates `.mcp.json` in each project pointing to the same shared state directory.
 ### Run the Demo
 
 ```
-/cogent-bridge:demo
+/cogent:demo
 ```
 
 ## Configuration
@@ -66,7 +66,7 @@ The plugin uses sensible defaults. To customize, create a `.mcp.json` in your pr
 ```json
 {
   "mcpServers": {
-    "cogent-bridge": {
+    "cogent": {
       "command": "npx",
       "args": ["-y", "@essentialai/cogent-bridge"],
       "env": {

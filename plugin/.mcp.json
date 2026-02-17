@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "cogent-bridge": {
+    "cogent": {
       "command": "npx",
       "args": ["-y", "@essentialai/cogent-bridge"],
       "env": {

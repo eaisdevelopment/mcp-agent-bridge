@@ -13,4 +13,4 @@ targets, then ask the user who to message and what to say.
 
 Use `cogent_send_message` with the current session's registered peer ID as
 `fromPeerId`. If this session is not registered yet, suggest running
-`/cogent-bridge:register` first.
+`/cogent:register` first.
